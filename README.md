@@ -1,51 +1,16 @@
-Information
------------
+## Dự án dịch "C++ Reference"
 
-This is source package for Cppreference C++ standard library reference
-documentation available at <http://en.cppreference.com>.
+1. Hướng dẫn đóng góp vào dự án
+Yêu cầu: Máy tính Windows, MacOS, Ubuntu,... có cài sẵn VSCode, git và Live Server (có thể sử dụng các công cụ tương đương khác hoặc đóng góp trực tiếp bằng cách chỉnh sửa bài viết trong thư mục `reference` trên `github.com`)
 
-If there is no 'reference/' subdirectory in this package, the actual
-documentation is not present here and must be obtained separately in order to
-build the binary package. This can be done in two ways:
+Fork dự án này và clone về máy tính của bạn:
+```git clone https://github.com/{your_username}/vietnamese-cppreference.git```
 
- 1) Downloading a prepared archive from
- <http://en.cppreference.com/w/Cppreference:Archives>. This method is preferred.
+Mở thư mục `reference` bằng VSCode, sau đó click chuột phải để mở thư mục bằng Live Server.
+Giờ đây, bạn có thể đóng góp vào dự án bằng cách dịch các file trong thực mục `en`.
 
- 2) Running `make source` which will pull the documentation directly from the
- website page-by-page. You should not normally use this method. The download
- script is updated to take into account any changes of the website only when
- there's new release at <http://en.cppreference.com/w/Cppreference:Archives>.
- If the layout of the website has changed since the last release, the download
- script might not work. Also, it puts unnecessary load on the servers. Please do
- not use this method unless you know what you are doing.
+2. Tạo Pull Request:
 
-Note, that abovementioned documentation is still a raw copy of the website and
-needs to be transformed in order to be suitable for local viewing. Three
-documentation formats are currently supported:
-
- 1) Plain html documentation. Can be generated using `make doc_html`. The
- result of the transformation will be placed at the 'output/reference'
- subdirectory.
-
- 2) Devhelp documentation format. Can be generated using `make doc_devhelp`.
- `make install` installs the documentation into proper locations.
-
- 3) QT Help documentation format (.qch). Can be generated using `make doc_qch`.
- `make install` installs the documentation into proper locations.
-
-Simply running `make all` will generate documentation in all three formats.
-
-Running `make release` will generate the release archives which are uploaded
-to <http://en.cppreference.com/w/Cppreference:Archives>.
-
-Dependencies
-------------
-
-The package depends on 'wget' (>=1.15), 'python3', 'python3-lxml',
-and 'qhelpgenerator' for the generation of the documentation.
-
-See also
---------
-
-Debian packaging information for this package is maintained at
-<https://github.com/p12tic/cppreference-doc_debian>
+- Tạo git commit
+- Push lên github của bạn
+- Tạo pull request vào dự án này.
