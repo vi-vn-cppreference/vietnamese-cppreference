@@ -1,0 +1,37 @@
+# Travis CI configuration file
+# http://about.travis-ci.org/docs/
+dist: bionic
+
+language: python
+
+# Available Python versions:
+# http://about.travis-ci.org/docs/user/ci-environment/#Python-VM-images
+python:
+  - "3.6"
+  - "3.7"
+
+# Dependencies installation commands
+install:
+  - pip install -U pip
+  - pip install -r requirements.txt
+  - pip install -r requirements-ci.txt
+
+before_script:
+ - "flake8 --config=config/flake8rc *.py commands index_transform gadgets/standard_revisions_tests/*.py tests"
+ - "pylint --rcfile=config/pylintrc *.py commands index_transform gadgets/standard_revisions_tests/*.py tests"
+
+script:
+  - "python -m unittest discover"
+  - "mkdir -p tmp"
+  - "python index2browser.py index-functions-c.xml tmp/index-functions-c-web.html"
+  - "python index2browser.py index-functions-cpp.xml tmp/index-functions-cpp-web.html"
+
+notifications:
+  email: false
+
+sudo: false
+branches:
+  only:
+    - master
+git:
+  depth: 300
