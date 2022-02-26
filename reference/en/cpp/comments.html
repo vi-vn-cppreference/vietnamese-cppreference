@@ -139,7 +139,7 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <tr class="t-nv"><td colspan="5"> <a href="language/memory_model.html" title="cpp/language/memory model"> memory model</a> </td></tr>
 </table></div>
 </div><div></div></div></div></div><div class="t-navbar-sep"> </div></div>
-<p>Comments serve as a sort of in-code documentation. When inserted into a program, they are effectively ignored by the compiler; they are solely intended to be used as notes by the humans that read source code. Although specific documentation is not part of the C++ standard, several utilities exist that parse comments with different documentation formats.
+<p>Comment là lời chú thích trong tài liệu của mã nguồn. Khi được thêm vào chương trình, chúng được bỏ qua bởi trình biên dịch, chúng được dùng với mục đích lưu chú cho người khác khi đọc mã nguồn đó. Mặc dù không có một tài liệu cụ thể nào cho C++ tiêu chuẩn nhưng vẫn có một vài tiêu chuẩn tồn tại để phân tích comments bằng nhiều dạng tài liệu khác nhau.
 </p>
 <h3><span class="mw-headline" id="Syntax">Syntax</span></h3>
 <table class="t-sdsc-begin">
@@ -173,19 +173,19 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <tr>
 <td colspan="10" class="t-sdsc-sep">
 </td></tr></table>
-<div class="t-li1"><span class="t-li">1)</span> Often known as "C-style" or "multi-line" comments.</div>
-<div class="t-li1"><span class="t-li">2)</span> Often known as "C++-style" or "single-line" comments.</div>
-<p>All comments are removed from the program at <a href="language/translation_phases.html" title="cpp/language/translation phases">translation phase 3</a> by replacing each comment with a single whitespace character.
+<div class="t-li1"><span class="t-li">1)</span> Thường hay được xem là C-style hay comment nhiều hàng</div>
+<div class="t-li1"><span class="t-li">2)</span> Thường hay được xem là C++ style hay comment trên 1 hàng</div>
+<p>Tất cả comments được xóa bởi chương trình tại <a href="language/translation_phases.html" title="cpp/language/translation phases">mục 3</a> bằng cách thay thế mỗi comment bằng một ký tự xuống hàng.
 </p>
 <h3><span class="mw-headline" id="C-style">C-style</span></h3>
-<p>C-style comments are usually used to comment large blocks of text, however, they can be used to comment single lines. To insert a C-style comment, simply surround text with <code>/*</code> and <code>*/</code>; this will cause the contents of the comment to be ignored by the compiler. Although it is not part of the C++ standard, <code>/**</code> and <code>*/</code> are often used to indicate documentation blocks; this is legal because the second asterisk is simply treated as part of the comment. C-style comments cannot be nested.
+<p>C-Style comments thường được dùng để chú thích một khối, tuy nhiên có lúc chúng được để comment 1 hàng. Để sử dụng C-style comment thì sẽ bọc quanh đoạn text đó bằng <code>/*</code> và <code>*/</code>; nội dung phía bên trong sẽ được bỏ qua khi thực hiện biên dịch. Mặc dù nó không phải là tiêu chuẩn của C++ nhưng <code>/**</code> và <code>*/</code> thường được dùng để biểu thị cho một đoạn chú thích; điều này là hợp lệ bởi vì dấu <code>*</code> thứ hai được xem là một phần của comment đó. Lưu ý là C-Style comments không được lồng vào nhau.
 </p>
 <h3><span class="mw-headline" id="C.2B.2B-style">C++-style</span></h3>
-<p>C++-style comments are usually used to comment single lines, however, multiple C++-style comments can be placed together to form multi-line comments. C++-style comments tell the compiler to ignore all content between <code>//</code> and a new line.
+<p>C++-style thông thường được dùng để chú thích một dòng, tuy nhiên việc chú thích nhiều dòng vẫn có thể thực hiện được bằng cách chú thích các dòng đơn nối tiếp với nhau. C++ style comments báo cho trình biên dịch bỏ qua phần nội dung ở trên hàng đó phía nằm sau dấu <code>//</code>.
 </p>
 <h3><span class="mw-headline" id="Notes">Notes</span></h3>
-<p>Because comments <a href="language/translation_phases.html" title="cpp/language/translation phases">are removed</a> before the preprocessor stage, a macro cannot be used to form a comment and an unterminated C-style comment doesn't spill over from an #include'd file.
-</p><p>Besides commenting out, other mechanisms used for source code exclusion are
+<p>Bởi vì comments <a href="language/translation_phases.html" title="cpp/language/translation phases">được xóa đi</a> trước khi bước vào quá trình tiền xử lí, một marco không được dùng để tạo một comment và C-style comment không hoàn chỉnh sẽ không được thêm vào #include'd file.
+</p><p>Trước khi thực hiện comment, những cơ chế khác dùng cho những phần khác (không phải mã nguồn) như là
 </p>
 <div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#if 0</span>
     <a href="io/cout.html"><span class="kw1755">std::<span class="me2">cout</span></span></a> <span class="sy1">&lt;&lt;</span> <span class="st0">"this will not be executed or even compiled<span class="es1">\n</span>"</span><span class="sy4">;</span>
