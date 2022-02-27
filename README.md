@@ -2,9 +2,7 @@
 
 ## Làm sao để đóng góp cho dự án
 
-Yêu cầu tối thiểu đăng ký thành viên vào dự án, lý do là đây là dự án đòi hỏi tính chính xác của tài liệu nên có sự giới hạn về thành viên tham gia dự án.
-
-Cách thứ nhất thay đổi trực tiếp vào dự án thông qua GitHub wiki
+Cách thứ nhất thay đổi trực tiếp vào dự án thông qua GitHub wiki [Wiki](https://github.com/vi-vn-cppreference/vietnamese-cppreference.wiki.git)
 
 Cách thứ hai thay đổi qua Git repo và commit trực tiếp
 
@@ -24,10 +22,18 @@ Cách dễ dùng: Dùng extension Markdown trên Visual Studio Code để chỉn
 
 ## Nếu tôi không phải là thành viên
 
-Dĩ nhiên vì là tài liệu yêu cầu độ chính xác nên chúng tôi buộc phải giới hạn người commit
+Sau khi cân nhắc lại, bạn có thể tham gia đóng góp cho dự án thông qua đường link code repository GitHub sau [Code](https://github.com/vi-vn-cppreference/vietnamese-cppreference.git)
 
-Bạn có thể đóng góp bằng việc mớ issue, cũng như gia nhập thành viên để chính thức commit vào dự án.
+Ngoài ra các bạn cũng có thể Pull request cũng tạo issue nếu phát hiện lỗi 
 
 ## Đăng ký thành viên
 
 Đăng ký qua comment post trong bài [Post](https://voz.vn/t/ru-re-dich-tai-lieu-cppreference-com.461444/)
+
+## Đồng bộ phần Wiki và phần Code
+
+Với các thành viên chính thức, sẽ được commit vào phần wiki cũng như phần code
+
+Với không phải thành viên bạn sẽ chỉ tạo Pull request vào phần code
+
+Sau 1 tuần lễ, phần Code và Wiki sẽ được đồng bộ lại
