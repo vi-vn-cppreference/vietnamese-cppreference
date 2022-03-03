@@ -62,9 +62,8 @@ Từ khoá posix được dành cho một ký hiệu tên bậc cao trong tươn
 
 Các ký hiệu dưới đây được nhận dạng bởi bộ tiền xử lý (preprocessor) khi ở trong ngữ cảnh của một chỉ thì của bộ tiền xử lý:
 
-|       |        |         |                                 |                 |
-|-------|--------|---------|---------------------------------|-----------------|
 | if    | ifdef  | include | defined                         | export (C++ 20) |
+|-------|--------|---------|---------------------------------|-----------------|
 | elif  | ifndef | line    | __has_include (từ C++ 17)       | import (C++ 20) |
 | else  | define | error   | __has_cpp_attribute (từ C++ 20) | module (C++ 20) |
 | endif | undef  | pragma  |                                 |                 |
