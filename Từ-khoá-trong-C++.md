@@ -60,7 +60,7 @@ Ký hiệu tên std được dùng để chứa các tên của thư viện C++ 
 
 Từ khoá posix được dành cho một ký hiệu tên bậc cao trong tương lai. Hành vi sẽ không được định nghĩa nếu một chương trình khai báo hoặc định nghĩa bất kỳ thứ gì trong ký hiệu tên đó.
 
-Các ký hiệu dưới đây được nhận dạng bởi bộ tiền xử lý (preprocessor) khi ở trong ngữ cảnh của một chỉ thì của bộ tiền xử lý:
+Các ký hiệu dưới đây được nhận dạng bởi bộ tiền xử lý (preprocessor) khi ở trong ngữ cảnh của một chỉ thị của bộ tiền xử lý:
 
 |       |        |         |                                 |                 |
 |-------|--------|---------|---------------------------------|-----------------|
@@ -69,7 +69,7 @@ Các ký hiệu dưới đây được nhận dạng bởi bộ tiền xử lý 
 | else  | define | error   | __has_cpp_attribute (từ C++ 20) | module (C++ 20) |
 | endif | undef  | pragma  |                                 |                 |
 
-Các ký hiệu dưới đây được nhận dạng bởi bộ tiền xử lý (preprocessor) khi ở ngoài ngữ cảnh của một chỉ thì của bộ tiền xử lý:
+Các ký hiệu dưới đây được nhận dạng bởi bộ tiền xử lý (preprocessor) khi ở ngoài ngữ cảnh của một chỉ thị của bộ tiền xử lý:
 _Pragma (từ C++ 11)
 
 Xem thêm [Tài liệu ngôn ngữ C](https://en.cppreference.com/w/c/keyword) cho **Từ khoá trong ngôn ngữ C**
