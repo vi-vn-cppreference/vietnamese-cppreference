@@ -44,6 +44,6 @@ Chú thích:
 - (2) - Nghĩa của từ khoá được thay đổi trong phiên bản C++ 17.
 - (3) - Nghĩa của từ khoá được thay đổi trong phiên bản C++ 20.
 
-Chú ý rằng những từ khoá: and, bitor, or, xor, compl, bitand, and_eq, or_eq, xor_eq, not, và not_eq (cùng với các ký tự <:, :>, %:, và %:%:) cung cấp một cách tương tự để biểu diễn token tiêu chuẩn.
+Chú ý rằng những từ khoá: and, bitor, or, xor, compl, bitand, and_eq, or_eq, xor_eq, not, và not_eq (cùng với các ký tự <:, :>, %:, và %:%:) cung cấp một cách tương tự để biểu diễn ký hiệu (token) tiêu chuẩn.
 
-Bên cạnh những từ khoá trên, 
+Bên cạnh những từ khoá trên, các định danh (identifier) với ý nghĩa đặc biệt, có thể được sử dụng như tên của các đối tượng hoặc hàm, nhưng chúng có ý nghĩa đặc biệt trong các ngữ cảnh nhất định.
