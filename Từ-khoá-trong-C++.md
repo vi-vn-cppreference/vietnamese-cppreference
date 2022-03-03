@@ -56,7 +56,7 @@ Bên cạnh những từ khoá trên, các định danh (identifier) với ý ng
 
 Thêm vào đó, tất cả các định danh chứa hai dấu gạch dưới __ trong bất kỳ vị trí nào và mỗi định danh bắt đầu với một dấu gạch dưới, sau đó là một chữ cái in hoa thường là các từ đặc biệt và tất cả các định danh bắt đầu với một dấu gạch dưới _ được dành để dùng như tên trong ký hiệu tên (namespace) toàn cục. Xem phần [định danh](https://en.cppreference.com/w/cpp/language/identifiers) để biết thêm chi tiết.
 
-Ký hiệu tên std được dùng để đặt các tên của thư viện C++ tiêu chuẩn. Xem phần [Mở rộng ký hiệu tên std](https://en.cppreference.com/w/cpp/language/extending_std) để biết thêm về quy tắc thêm tên vào nó.
+Ký hiệu tên std được dùng để chứa các tên của thư viện C++ tiêu chuẩn. Xem phần [Ký hiệu tên std mở rộng](https://en.cppreference.com/w/cpp/language/extending_std) để biết thêm về quy tắc thêm tên vào std.
 
 Từ khoá posix được dành cho một ký hiệu tên bậc cao trong tương lai. Hành vi sẽ không được định nghĩa nếu một chương trình khai báo hoặc định nghĩa bất kỳ thứ gì trong ký hiệu tên đó.
 
