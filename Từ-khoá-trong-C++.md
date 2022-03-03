@@ -71,3 +71,5 @@ Các ký hiệu dưới đây được nhận dạng bởi bộ tiền xử lý 
 
 Các ký hiệu dưới đây được nhận dạng bởi bộ tiền xử lý (preprocessor) khi ở ngoài ngữ cảnh của một chỉ thì của bộ tiền xử lý:
 _Pragma (từ C++ 11)
+
+Xem thêm [Tài liệu ngôn ngữ C](https://en.cppreference.com/w/c/keyword) cho **Từ khoá trong ngôn ngữ C**
