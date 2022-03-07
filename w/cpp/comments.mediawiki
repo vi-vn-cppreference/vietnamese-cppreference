@@ -1,0 +1,73 @@
+Bình luận - Comments là phục vụ trong công việc ghi lại tài liệu trong code. Khi được thêm vào chương trình, trình biên dịch (complier) sẽ tự động bỏ qua chúng. Do đó việc sử dụng comments mục đích giúp cho người đọc mã nguồn (source code) dễ dàng hiểu được chương trình đang thực hiện công việc gì. Không có một quy chuẩn trong C++ nào quy định việc comment do đó vẫn có nhiều công cụ giúp phân tích cú pháp comments với nhiều loại định dạng khác nhau. 
+
+===Cú pháp===
+
+<source lang=cpp> /* comment */ </source>            <small>(1)</small>
+
+<source lang=cpp> // comment    </source>            <small>(2)</small>
+
+1) '''C-Style''' được dùng khi muốn viết comment nhiều hàng.
+
+2) '''C++Style''' được dùng khi muốn viết comment một hàng.
+
+Tất cả comments trong source code được xóa đi bởi chương trình tại [https://en.cppreference.com/w/cpp/language/translation_phases giai đoạn 3 của việc chuyển ngữ] bằng cách thay thế mỗi comment bằng một khoảng trắng (white space character).
+===C-style===
+C-style comments thường được dùng để comment một đoạn văn bản trên nhiều hàng, đôi lúc chúng cũng có thể được sử dụng để comment một hàng. Khi sử dụng C-style comment, đoạn văn bản được bọc bởi /* và */ thì phần nội dung bên nó sẽ bị bỏ qua bởi trình biên dịch. Mặc dù /** và */ không phải là kiểu comment tiêu chuẩn của C++ nhưng việc sử dụng chúng là hợp lệ bởi vì dấu * thứ hai ở trong /** được xem là một phần của comment. Lưu ý là C-style comments không thể ghép lồng vào nhau.
+===C++-style===
+C++-style comments thường được dùng để comment một dòng, tuy nhiên khi kết hợp việc thực hiện comment nhiều dòng đơn liên tiếp sẽ cho kết quả tương tự như khi sử dụng C-Style. C++ style sẽ báo cho trình biên dịch biết phần nội dung phía sau dấu // mà ở trên hàng đó bị bỏ qua khi thực hiện biên dịch.
+===Notes===
+Bởi vì comments được xóa đi trước khi bước vào quá trình tiền xử lý, do đó một macro sẽ không được dùng như một comment và kiểu C-style comment sẽ không được thông qua trong tệp tin #include'd.
+
+Trước khi comment, có những cách khác được dùng để loại bỏ mã nguồn như là
+
+<source lang=cpp>
+#if 0
+    std::cout << "this will not be executed or even complied\n";
+#endif
+</source>
+
+Và
+
+<source lang=cpp>
+if (false) {
+    std::cout << "this will not be executed\n";
+}
+</source>
+
+===Example===
+
+<source lang=cpp>
+#include <iostream>
+/* C-style comments can contain
+multiple lines */
+/* or just one */
+ 
+/**************
+ *  you can insert any *, but
+ *  you can't make comments nested
+ */
+ 
+// C++-style comments can comment one line
+ 
+// or, they can
+// be strung together
+ 
+int main()
+{
+  // comments are removed before preprocessing,
+  // so ABC is "1", not "1//2134", and "1 hello world"
+  // will be printed
+#define ABC 1//2134
+  std::cout << ABC << " hello world\n";
+ 
+  // The below code won't be run
+  // return 1;
+ 
+  // The below code will be run
+  return 0;
+}
+</source>
+
+Kết quả nhận được:
+
+<code>1 hello world</code>
