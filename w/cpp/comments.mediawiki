@@ -2,9 +2,9 @@ Bình luận - Comments là phục vụ trong công việc ghi lại tài liệu
 
 ===Cú pháp===
 
-<syntaxhighlight lang=cpp> /* comment */ </syntaxhighlight>            <small>(1)</small>
+<source lang=cpp> /* comment */ </source>            <small>(1)</small>
 
-<syntaxhighlight lang=cpp> // comment    </syntaxhighlight>            <small>(2)</small>
+<source lang=cpp> // comment    </source>            <small>(2)</small>
 
 1) '''C-Style''' được dùng khi muốn viết comment nhiều hàng.
 
@@ -20,23 +20,23 @@ Bởi vì comments được xóa đi trước khi bước vào quá trình tiề
 
 Trước khi comment, có những cách khác được dùng để loại bỏ mã nguồn như là
 
-<syntaxhighlight lang=cpp>
+<source lang=cpp>
 #if 0
     std::cout << "this will not be executed or even complied\n";
 #endif
-</syntaxhighlight>
+</source>
 
 Và
 
-<syntaxhighlight lang=cpp>
+<source lang=cpp>
 if (false) {
     std::cout << "this will not be executed\n";
 }
-</syntaxhighlight>
+</source>
 
 ===Example===
 
-<syntaxhighlight lang=cpp>
+<source lang=cpp>
 #include <iostream>
 /* C-style comments can contain
 multiple lines */
@@ -66,7 +66,7 @@ int main()
   // The below code will be run
   return 0;
 }
-</syntaxhighlight>
+</source>
 
 Kết quả nhận được:
 
