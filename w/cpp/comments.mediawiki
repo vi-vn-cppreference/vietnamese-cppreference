@@ -2,9 +2,9 @@ Bình luận - Comments là phục vụ trong công việc ghi lại tài liệu
 
 ===Cú pháp===
 
-<code><small>/* comment */</small></code>            <small>(1)</small>
+<syntaxhighlight lang=cpp> /* comment */ </syntaxhighlight>            <small>(1)</small>
 
-<code><small>// comment   </small></code>            <small>(2)</small>
+<syntaxhighlight lang=cpp> // comment    </syntaxhighlight>            <small>(2)</small>
 
 1) '''C-Style''' được dùng khi muốn viết comment nhiều hàng.
 
@@ -20,67 +20,53 @@ Bởi vì comments được xóa đi trước khi bước vào quá trình tiề
 
 Trước khi comment, có những cách khác được dùng để loại bỏ mã nguồn như là
 
-<code>#if 0</code>
-
-<code>    std::cout << "this will not be executed or even complied'''\n'''";</code>
-
-<code>#endif</code>
+<syntaxhighlight lang=cpp>
+#if 0
+    std::cout << "this will not be executed or even complied\n";
+#endif
+</syntaxhighlight>
 
 Và
 
-<code>if (false) {</code>
-
-<code>    std::cout << "this will not be executed'''\n'''";</code>
-
-<code>}</code>
+<syntaxhighlight lang=cpp>
+if (false) {
+    std::cout << "this will not be executed\n";
+}
+</syntaxhighlight>
 
 ===Example===
 
-<code>#include <iostream></code>
-
-<code>/* C-style comments can contain</code>
-
-<code>multiple lines */</code>
-
-<code>/* or just one */</code>
-
-<code>/**************</code>
-
-<code> *  you can insert any *, but</code>
-
-<code> *  you can't make comments nested</code>
-
-<code> */</code>
-
-<code>// C++-style comments can comment one line</code>
-
-<code>// or, they can</code>
-
-<code>// be strung together</code>
-
-<code>int main()</code>
-
-<code>{</code>
-
-<code>  // comments are removed before preprocessing,</code>
-
-<code>  // so ABC is "1", not "1//2134", and "1 hello world"</code>
-
-<code>  // will be printed</code>
-
-<code>#define ABC 1//2134</code>
-
-<code>  std::cout << ABC << " hello world\n";</code>
-
-<code>  // The below code won't be run</code>
-
-<code>  // return 1;</code>
+<syntaxhighlight lang=cpp>
+#include <iostream>
+/* C-style comments can contain
+multiple lines */
+/* or just one */
  
-<code>  // The below code will be run</code>
-
-<code>  return 0;</code>
-
-<code>}</code>
+/**************
+ *  you can insert any *, but
+ *  you can't make comments nested
+ */
+ 
+// C++-style comments can comment one line
+ 
+// or, they can
+// be strung together
+ 
+int main()
+{
+  // comments are removed before preprocessing,
+  // so ABC is "1", not "1//2134", and "1 hello world"
+  // will be printed
+#define ABC 1//2134
+  std::cout << ABC << " hello world\n";
+ 
+  // The below code won't be run
+  // return 1;
+ 
+  // The below code will be run
+  return 0;
+}
+</syntaxhighlight>
 
 Kết quả nhận được:
 
