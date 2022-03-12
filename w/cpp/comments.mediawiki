@@ -1,0 +1,72 @@
+Bình luận - Comments là phục vụ trong công việc ghi lại tài liệu trong mã nguồn. Khi được thêm vào chương trình, trình biên dịch (compiler) sẽ tự động bỏ qua chúng. Do đó việc sử dụng ''bình luận'' mục đích giúp cho người đọc mã nguồn (source code) dễ dàng hiểu được chương trình đang thực hiện công việc gì. Không có một quy chuẩn trong C++ nào quy định việc ''bình luận'' do đó vẫn có nhiều công cụ giúp phân tích cú pháp ''bình luận'' với nhiều loại định dạng khác nhau. 
+===Cú pháp===
+
+<source lang=cpp> /* bình luận */ </source> <small>(1)</small>
+
+<source lang=cpp> // bình luận    </source> <small>(2)</small>
+
+1) '''C-Style''' được dùng khi muốn viết ''bình luận'' nhiều hàng.
+
+2) '''C++Style''' được dùng khi muốn viết ''bình luận'' một hàng.
+
+Tất cả ''bình luận'' trong ''mã nguồn'' được xóa đi bởi chương trình tại [https://en.cppreference.com/w/cpp/language/translation_phases giai đoạn 3 của việc chuyển ngữ] bằng cách thay thế mỗi comment bằng một khoảng trắng (white space character).
+===C-style===
+C-style comments thường được dùng để comment một đoạn văn bản trên nhiều hàng, đôi lúc chúng cũng có thể được sử dụng để comment một hàng. Khi sử dụng C-style comment, đoạn văn bản được bọc bởi /* và */ thì phần nội dung bên nó sẽ bị bỏ qua bởi trình biên dịch. Mặc dù /** và */ không phải là kiểu comment tiêu chuẩn của C++ nhưng việc sử dụng chúng là hợp lệ bởi vì dấu * thứ hai ở trong /** được xem là một phần của comment. Lưu ý là C-style comments không thể ghép lồng vào nhau.
+===C++-style===
+C++-style comments thường được dùng để comment một dòng, tuy nhiên khi kết hợp việc thực hiện comment nhiều dòng đơn liên tiếp sẽ cho kết quả tương tự như khi sử dụng C-Style. C++ style sẽ báo cho trình biên dịch biết phần nội dung phía sau dấu // mà ở trên hàng đó bị bỏ qua khi thực hiện biên dịch.
+===Notes===
+Bởi vì comments được xóa đi trước khi bước vào quá trình tiền xử lý, do đó một macro sẽ không được dùng như một comment và kiểu C-style comment sẽ không được thông qua trong tệp tin #include'd.
+
+Trước khi comment, có những cách khác được dùng để loại bỏ mã nguồn như là
+
+<source lang=cpp>
+#if 0
+    std::cout << "this will not be executed or even complied\n";
+#endif
+</source>
+
+Và
+
+<source lang=cpp>
+if (false) {
+    std::cout << "this will not be executed\n";
+}
+</source>
+
+===Example===
+
+<source lang=cpp>
+#include <iostream>
+/* Bình luận kiểu-C có thể chứa
+nhiều dòng */
+/* hoặc chỉ một */
+ 
+/**************
+ *  bạn có thể chèn dấu *, nhưng
+ *  bạn không thể tạo bình luận lồng vào nhau
+ */
+ 
+// Bình luận kiểu-C++ có thể một dòng
+ 
+// hoặc, chúng có thể
+// được kết chuỗi lại với nhau
+ 
+int main()
+{
+  // bình luận được loại bỏ trước khi tiền xử lý,
+  // nên ABC là "1", không phải "1//2134" và "1 hello world"
+  // sẽ được in ra
+#define ABC 1//2134
+  std::cout << ABC << " hello world\n";
+ 
+  // Đoạn code phía dưới sẽ không chạy
+  // return 1;
+ 
+  // Đoạn code phía dưới sẽ chạy
+  return 0;
+}
+</source>
+
+Kết quả nhận được:
+
+<code>1 hello world</code>

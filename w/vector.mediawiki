@@ -1,20 +1,24 @@
 == '''[https://en.cppreference.com/w/cpp/container/vector std::vector]''' ==
-<syntaxhighlight lang="cpp">
+
+<source lang="cpp">
 template<
     class T,
     class Allocator = std::allocator<T>             (1)
 > class vector;
-</syntaxhighlight><syntaxhighlight lang="cpp">
+</source>
+<source lang="cpp">
 namespace pmr {
     template <class T>                              (2)    (hỗ trợ từ C++17 trở đi)
     using vector = std::vector<T, std::pmr::polymorphic_allocator<T>>;       
 }
-</syntaxhighlight>1) std:: vector là nơi lưu trữ dữ liệu liền kề nhau mà chúng được bao đóng dưới dạng mảng dữ liệu linh động về kích thước.
+</source>
+
+1) std:: vector là nơi lưu trữ dữ liệu liền kề nhau mà chúng được bao đóng dưới dạng mảng dữ liệu linh động về kích thước.
 2) std::pmr::vector là tên gọi khác của khuôn mẫu sử dụng phân bổ đa hình.
 
 Các phần tử được lưu trữ liền kề nhau có nghĩa là các phần tử không chỉ được truy cập thông qua '''iterators''' chúng mà còn có thể sử dụng địa chỉ tương đối của con trỏ để trỏ tới phần tử đó. Điều này tương đương với việc một con trỏ trỏ tới một phần tử của vector được truyền vào hàm nào mà nó nhận tham số đầu vào là một con trỏ trỏ tới một phần tử của một mảng.
 
-Việc lưu trữ của '''vector''' được xử lý tự động, được thêm bớt khi cần thiết. '''Vectors''' thường chiếm dung lượng nhiều hơn mảng tĩnh, vì nó cần nhiều dung lượng được phân bổ để có thể mở rộng sau này. Do đó một '''vector''' không cần tái phân bổ lại mỗi khi có một phần tử khác được thêm vào, việc tái phân bổ được thực hiện lại khi vùng nhớ còn lại không đủ. Tổng dung lượng vùng nhớ đã được phân bổ có thể được truy vấn bằng cách sử dụng hàm [Https://en.cppreference.com/w/cpp/container/vector/capacity capacity()]. <code>Vùng nhớ dư thừa có thể được trả về hệ thống thông qua hàm [https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit shrink_to_fit()] ( hỗ trợ từ C++11 trở đi).</code>
+Việc lưu trữ của '''vector''' được xử lý tự động, được thêm bớt khi cần thiết. '''Vectors''' thường chiếm dung lượng nhiều hơn mảng tĩnh, vì nó cần nhiều dung lượng được phân bổ để có thể mở rộng sau này. Do đó một '''vector''' không cần tái phân bổ lại mỗi khi có một phần tử khác được thêm vào, việc tái phân bổ được thực hiện lại khi vùng nhớ còn lại không đủ. Tổng dung lượng vùng nhớ đã được phân bổ có thể được truy vấn bằng cách sử dụng hàm [Https://en.cppreference.com/w/cpp/container/vector/capacity capacity()]. <code>Vùng nhớ dư thừa có thể được trả về hệ thống thông qua hàm [https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit shrink_to_fit()] (hỗ trợ từ C++11 trở đi).</code>
 
 
 Việc tái phân bổ vùng nhớ là quá trình tiêu tốn gây ảnh hưởng tới hiệu năng. Hàm [https://en.cppreference.com/w/cpp/container/vector/reserve reserve()]được dùng để loại bỏ việc tái phân bổ lại vùng nhớ nếu số lượng phần tử được biết trước.
@@ -299,7 +303,7 @@ crend(C++11)
 |}
 ==[https://en.cppreference.com/w/cpp/container/vector/deduction_guides Deduction guides] ( hỗ trợ từ C++17)==
 =='''Ví dụ'''==
-<syntaxhighlight lang="cpp">
+<source lang="cpp">
 #include <iostream>
 #include <vector>
 
@@ -319,9 +323,12 @@ int main()
     }
     std::cout << "}; \n";
 }
-</syntaxhighlight>Kết qủa đầu ra:<syntaxhighlight lang="cpp">
+</source>
+
+Kết qủa đầu ra:
+<source lang="cpp">
 v = { 7, 5, 16, 8, 25, 13, };
-</syntaxhighlight>
+</source>
 =='''Báo cáo thiếu sót'''==
 Các báo cáo lỗi của các tính năng đã thay đổi được áp trở cho các bản tiêu chuẩn C++ đã được công bố trước đó
 {| class="wikitable"

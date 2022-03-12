@@ -1,0 +1,372 @@
+== '''[https://en.cppreference.com/w/cpp/container/vector std::vector]''' ==
+
+<source lang="cpp">
+template<
+    class T,
+    class Allocator = std::allocator<T>             
+> class vector;
+</source>
+
+(1)
+
+<source lang="cpp">
+namespace pmr {
+    template <class T>                              
+    using vector = std::vector<T, std::pmr::polymorphic_allocator<T>>;       
+}
+</source>
+
+(2)    (hỗ trợ từ C++17 trở đi)
+
+1) std:: vector là nơi lưu trữ dữ liệu liền kề nhau mà chúng được bao đóng dưới dạng mảng dữ liệu linh động về kích thước.
+
+2) std::pmr::vector là tên gọi khác của khuôn mẫu sử dụng [https://en.cppreference.com/w/cpp/memory/polymorphic_allocator phân bổ đa hình].
+
+Các phần tử được lưu trữ liền kề nhau có nghĩa là các phần tử không chỉ được truy cập thông qua '''iterators''' (đối tượng có thể đi qua) chúng mà còn có thể sử dụng địa chỉ tương đối của con trỏ để trỏ tới phần tử đó. Điều này có nghĩa với việc một con trỏ trỏ tới một phần tử của vector được truyền vào hàm nào mà nó nhận tham số đầu vào là một con trỏ trỏ tới một phần tử của một mảng.
+
+Việc lưu trữ của '''vector''' được xử lý tự động, được thêm bớt khi cần thiết. '''Vectors''' thường chiếm dung lượng nhiều hơn mảng tĩnh, vì nó cần nhiều dung lượng được phân bổ để có thể mở rộng trong tương lai. Do đó một '''vector''' không cần tái phân bổ lại mỗi khi có một phần tử khác được thêm vào, việc tái phân bổ được thực hiện lại khi vùng nhớ còn lại không đủ. Tổng dung lượng vùng nhớ đã được phân bổ có thể được truy vấn bằng cách sử dụng hàm [https://en.cppreference.com/w/cpp/container/vector/capacity capacity()]. <code>Vùng nhớ dư thừa có thể được trả về hệ thống thông qua hàm [https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit shrink_to_fit()] (hỗ trợ từ C++11 trở đi).</code>
+
+
+Việc tái phân bổ vùng nhớ là quá trình tiêu tốn gây ảnh hưởng tới hiệu năng. Hàm [https://en.cppreference.com/w/cpp/container/vector/reserve reserve()] được dùng để loại bỏ việc tái phân bổ lại vùng nhớ nếu số lượng phần tử được biết trước.
+
+Độ phức tạp của (tính hiệu quả) của các phép toán thường gặp trên '''vector''' như là:
+*Truy cập ngẫu nhiên - Hằng số 𝓞(1)
+*Thêm hoặc xóa vài phần tử ở cuối '''vector''' - Hằng số 𝓞(1)
+*Thêm hoặc xóa vài phần tử - tuyến tính trong khoảng đến cuối '''vector''' 𝓞''(n)''
+std::vector (với T khác bool) đạt yêu cầu của [https://en.cppreference.com/w/cpp/named_req/Container Container], [https://en.cppreference.com/w/cpp/named_req/AllocatorAwareContainer AllocatorAwareContainer], [https://en.cppreference.com/w/cpp/named_req/SequenceContainer SequenceContainer], [https://en.cppreference.com/w/cpp/named_req/ContiguousContainer ContiguousContainer] (hỗ trợ từ C++17 trở đi) và [https://en.cppreference.com/w/cpp/named_req/ReversibleContainer ReversibleContainer].
+
+
+Các hàm là thành viên của std::vector là <code>constexpr</code>: có thể dùng để tạo và sử dụng đối tượng std::vector trong việc xem xét một biểu thức chứa hằng số.
+
+Tuy nhiên, đối tượng std::vector về tổng quan chúng không phải là <code>constexpr</code> bởi vì bất kỳ vùng lưu trữ nào được phân bổ linh động sẽ phải được giải phóng ra trong cùng một quá trình đánh giá của hằng biểu thức.
+
+(hỗ trợ từ C++ 20 trở đi)
+
+==Tham số của biểu mẫu==
+'''<big>T</big>''' - Kiểu của phần tử
+{| class="wikitable"
+|+
+|T phải đạt yêu cầu của [https://en.cppreference.com/w/cpp/named_req/CopyAssignable CopyAssignable - Có thể gán dựa vào copy] và [https://en.cppreference.com/w/cpp/named_req/CopyConstructible CopyConstructible - Khởi tạo dựa vào copy] (hỗ trợ đến bản C++11)
+|-
+|Các yêu cầu được đặt lên các phần tử, chúng phụ thuộc vào các quá trình diễn ra trên vùng lưu trữ. Về tổng quan, chúng yêu cầu kiểu của phần tử là một kiểu kiểu hoàn chỉnh và đạt yêu cầu [https://en.cppreference.com/w/cpp/named_req/Erasable Erasable - Có thể xóa], nhưng có nhiều hàm thành viên của áp đặt nhiều yêu cầu khắt khe. (hỗ trợ từ C++ 11 đến C++17)
+|-
+|Những yêu cầu này buộc các phần tử dựa trên các phép toán xử lý trên container (kiểu dữ liệu để chứa đựng). Nói một cách tổng quan, nó đòi hỏi kiểu dữ liệu phần tử đạt được yêu cầu [https://en.cppreference.com/w/cpp/named_req/Erasable Erasable - Có thể xóa], nhưng các hàm thành viên thì buộc các yêu cầu khắc nghiệt hơn. Vùng lưu trữ này (không bao gồm các thành viên của nó) có thể được tạo ra với một kiểu phần tử không hoàn chỉnh nếu trình phân bổ vùng nhớ thỏa mãn [https://en.cppreference.com/w/cpp/named_req/Allocator#Allocator_completeness_requirements allocator completeness requirements - trình phân bổ hoàn thiện với những yêu cầu]. (hỗ trợ từ C++17)
+[https://en.cppreference.com/w/cpp/feature_test#Library_features Feature testing] macro: [https://en.cppreference.com/w/cpp/utility/feature_test __cpp_lib_incomplete_container_elements]
+|}
+
+'''Allocator -''' Một trình phân bổ vùng nhớ được sử dụng để thu hồi/cấp phát bộ nhớ và xây dựng/phá bỏ các phần tử trong bộ nhớ đó. Kiểu của chúng phải đạt yêu cầu trong [https://en.cppreference.com/w/cpp/named_req/Allocator Allocator]. Hành vi không được định nghĩa (hỗ trợ đến C++20). Chương trình thì hình thức xấu (hỗ trợ từ C++20) nếu <code>Allocator::value_type</code>không giống với <code>T</code>.
+
+=='''Chỉ định'''==
+Thư viện chuẩn chỉ rõ các tính chất của std::vector cho kiểu <code>bool</code>, việc giúp tối ưu không gian hiệu quả.
+[https://en.cppreference.com/w/cpp/container/vector_bool vector<bool>] tối ưu không gian bitset linh động
+(lop)
+
+{| class="wikitable"
+|+
+![https://en.cppreference.com/w/cpp/container/vector_bool vector<small><bool></small>]
+bitset với không gian hiệu quả một cách linh động
+|}
+=='''Iterator xóa bỏ'''==
+{| class="wikitable"
+|+
+!Hoạt động
+!Xóa phần tử ra khỏi vị trí hiện tai
+|-
+|Tất cả các hoạt động đọc
+|Không bao giờ
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/swap swap], [https://en.cppreference.com/w/cpp/algorithm/swap std::swap]
+|[https://en.cppreference.com/w/cpp/container/vector/end end()]
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/clear clear], [https://en.cppreference.com/w/cpp/container/vector/operator%3D operator=], [https://en.cppreference.com/w/cpp/container/vector/assign assign]
+|Luôn luôn
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/reserve reserve], [https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit shink_to_fit]
+|Nếu '''vector''' thay đổi kích thước, tất cả chúng bị xóa bỏ. Nếu không thì không có gì
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/erase erase]
+|Xóa chính nó và tất cả các phần tử sau nó (bao gồm [https://en.cppreference.com/w/cpp/container/vector/end end()])
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/push_back push_back], [https://en.cppreference.com/w/cpp/container/vector/emplace_back emplace_back]
+|Nếu '''vector''' thay đổi kích thước, tất cả chúng bị xóa bỏ. Nếu không, chỉ mỗi end()
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/insert insert], [https://en.cppreference.com/w/cpp/container/vector/emplace emplace]
+|Nếu '''vector''' thay đổi kích thước, tất cả chúng bị xóa bỏ. Nếu không, chỉ có phần ở chính vị trí điểm chèn hoặc phía sau vị trí đó thay đổi (bao gồm end())
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/resize resize]
+|Nếu '''vector''' thay đổi kích thước, tất cả chúng bị xóa bỏ. Nếu không, chỉ duy nhất end() và các phần tử khác bị xóa đi.
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/pop_back pop_back]
+|Phần tử bị xóa đi '''vector''' và [https://en.cppreference.com/w/cpp/container/vector/end end()]
+|}
+=='''Phân loại thành viên'''==
+{| class="wikitable"
+|+
+!Loại thành viên
+!Định nghĩa
+|-
+|value_type
+|T
+|-
+|allocator_type
+|Kiểu phân bổ
+|-
+|size_type
+|Kiểu số nguyên không dấu (thường dùng [https://en.cppreference.com/w/cpp/types/size_t std::size_t])
+|-
+|difference_type
+|Kiểu số nguyên có dấu (thường dùng [https://en.cppreference.com/w/cpp/types/ptrdiff_t std::ptrdiff_t])
+|-
+|reference
+|<code>value_type&</code>
+|-
+|const_reference
+|<code>const value_type&</code>
+|-
+|pointer
+|Allocator::pointer (hỗ trợ đến C++11)
+<code>[http://en.cppreference.com/w/cpp/memory/allocator_traits std::allocator_traits]<Allocator>::pointer</code> (hỗ trợ kể từ C++11)
+|-
+|const_pointer
+|Allocator::const_pointer (hỗ trợ đến C++11)
+<code>[http://en.cppreference.com/w/cpp/memory/allocator_traits std::allocator_traits]<Allocator>::const_pointer</code> (hỗ trợ từ C++11)
+|-
+|iterator
+|[https://en.cppreference.com/w/cpp/named_req/RandomAccessIterator LegacyRandomAccessIterator] và [https://en.cppreference.com/w/cpp/named_req/ContiguousIterator LegacyContiguousIterator] đối với value_type (hỗ trợ đến C++20)
+[https://en.cppreference.com/w/cpp/named_req/RandomAccessIterator LegacyRandomAccessIterator], [https://en.cppreference.com/w/cpp/iterator/contiguous_iterator contiguous_iterator] và [https://en.cppreference.com/w/cpp/named_req/ConstexprIteratorConstexprIterator ConstexprIterator] đối với value_type (hỗ trợ từ C++20)
+|-
+|const_iterator
+|[https://en.cppreference.com/w/cpp/named_req/RandomAccessIterator LegacyRandomAccessIterator] và [https://en.cppreference.com/w/cpp/named_req/ContiguousIterator LegacyContiguousIterator] đối với const value_type (hỗ trợ đến C++20)
+[https://en.cppreference.com/w/cpp/named_req/RandomAccessIterator LegacyRandomAccessIterator], [https://en.cppreference.com/w/cpp/iterator/contiguous_iterator contiguous_iterator] và [https://en.cppreference.com/w/cpp/named_req/ConstexprIterator ConstexprIterator] đối với const value_type (hỗ trợ từ C++20)
+|-
+|reverse_iterator
+|<code>[http://en.cppreference.com/w/cpp/iterator/reverse_iterator std::reverse_iterator]<iterator></code>
+|-
+|const_reverse_iterator
+|<code>[http://en.cppreference.com/w/cpp/iterator/reverse_iterator std::reverse_iterator]<const_iterator></code>
+|}
+=='''Hàm thành viên'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/container/vector/vector (constructor)]
+|Xây dựng lên vector
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/~vector (destructor)]
+|Phá bỏ vector
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/operator%3D operator=]
+|Gán giá trị vào vùng lưu trữ
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/assign assign]
+|Gán giá trị vào vùng lưu trữ
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/get_allocator get_allocator]
+|Trả về kiểu phân bổ của vùng lưu trữ
+<small>(Hàm được phép tự do truy câp)</small>
+|}
+
+=='''Cách thức truy xuất vào phần tử'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/container/vector/at at]
+|Truy cập vào một phần tử cụ thể có kiểm tra vị trí
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/operator_at operator[] ]
+|Truy cập vào một phần tử cụ thể
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/front front]
+|Truy cập vào phần tử ở đầu
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/back back]
+|Truy cập vào phần tử ở cuối
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/data data]
+|Truy cập trực tiếp vào mảng lớp dưới
+<small>(Hàm được phép tự do truy câp)</small>
+|}
+=='''Iterators'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/container/vector/begin begin]
+[https://en.cppreference.com/w/cpp/container/vector/begin cbegin (C++11)]
+|Trả về một iterator chỉ đến phần tử đầu tiên của vector
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/end end]
+[https://en.cppreference.com/w/cpp/container/vector/end cend(C++11)]
+|Trả về một iterator chỉ đến phần tử cuối cùng của vector
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/rbegin rbegin]
+[https://en.cppreference.com/w/cpp/container/vector/rbegin crbegin(C++11)]
+|Trả về một iterator đảo ngược chỉ đến phần từ đầu tiên của vector
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/rend rend]
+[https://en.cppreference.com/w/cpp/container/vector/rend crend(C++11)]
+|Trả về một iterator đảo ngược chỉ đến phần tử cuối cùng của vector
+<small>(Hàm được phép tự do truy câp)</small>
+|}
+=='''Kiểm tra dung lượng'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/container/vector/empty empty]
+|Kiểm tra xem vùng lưu trữ có phải đang rỗng
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/size size]
+|Trả về số lượng phần tử
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/max_size max_size]
+|Trả về số lượng phần tử có thể lưu trữ được
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/reserve reserve]
+|Đặt trước lượng lưu trữ
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/capacity capacity]
+|Trả về số lượng phần tử mà đang được lưu giữ trong vùng nhớ đã phân bổ
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit shrink_to_fit (C++11)]
+|Giảm bộ nhớ sử dụng bằng cách giải phỏng vùng bộ nhớ không dùng đến
+<small>(Hàm được phép tự do truy câp)</small>
+|}
+=='''Thêm, bớt phần tử'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/container/vector/clear clear]
+|Xóa nội dung
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/insert insert]
+|Chèn thêm phần tử
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/emplace emplace (C++11)]
+|Thêm một phần tử mới vào trước vị trí chỉ định
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/erase erase]
+|Xóa hết các phần tử
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/push_back push_back]
+|Thêm một phần tử vào vị trí cuối
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/emplace_back emplace_back(C++11)]
+|Thêm một phần tử mới vào sau vị trí chỉ định
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/pop_back pop_back]
+|Xóa phần tử ở vị trí cuối
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/resize resize]
+|Thay đổi số lượng phần tử được lưu trữ
+<small>(Hàm được phép tự do truy câp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/swap swap]
+|Hoán đổi nội dung cho nhau
+<small>(Hàm được phép tự do truy câp)</small>
+|}
+=='''Không phải là hàm thành viên'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/container/vector/swap2 operator==]
+|
+| rowspan="7" |Về mặt ngữ nghĩa thì chúng so sánh với các giá trị ở trong vector
+(khuôn mẫu hàm)
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/operator_cmp operator!=]
+|Loại bỏ trong C++ 20
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/operator_cmp operator<]
+|Loại bỏ trong C++ 20
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/operator_cmp operator<=]
+|Loại bỏ trong C++ 20
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/operator_cmp operator>]
+|Loại bỏ trong C++ 20
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/operator_cmp operator>=]
+|Loại bỏ trong C++ 20
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/operator_cmp operator<=>]
+|Loại bỏ trong C++ 20
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/swap2 std::swap<small>(std::vector)</small>]
+|
+|chuẩn hóa thuật toán [https://en.cppreference.com/w/cpp/container/vector/swap2 std::swap]
+(khuôn mẫu hàm)
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/erase2 erase<small>(std::vector)</small>]
+| rowspan="2" |(C++20)
+| rowspan="2" |Xóa các phần tử đáp ứng các điều kiện cụ thể
+(khuôn mẫu hàm)
+|-
+|[https://en.cppreference.com/w/cpp/container/vector/erase2 erase_if<small>(std::vector)</small>]
+|}
+
+==[https://en.cppreference.com/w/cpp/container/vector/deduction_guides Deduction guides] ( hỗ trợ từ C++17)==
+=='''Ví dụ'''==
+
+<source lang="cpp">
+#include <iostream>
+#include <vector>
+
+int main()
+{
+    // Tạo 1 một vector chứa số nguyên
+    std::vector<int> v = {7, 5, 16, 8};
+
+    // Add two more integers to vector
+    v.push_back(25);
+    v.push_back(13);
+
+    //Print out the vector
+    std::cout << "v = { ";
+    for (int n : v) {
+        std::cout << n << ", ";
+    }
+    std::cout << "}; \n";
+}
+</source>
+
+Kết quả đầu ra:
+
+<source lang="cpp">
+v = { 7, 5, 16, 8, 25, 13, };
+</source>
+
+=='''Báo cáo thiếu sót'''==
+Các báo cáo lỗi của các tính năng đã thay đổi được áp trở cho các bản tiêu chuẩn C++ đã được công bố trước đó
+{| class="wikitable"
+|+
+!DR
+!Áp dụng cho
+!Tính năng được công bố
+!Sửa 
+|-
+|[https://cplusplus.github.io/LWG/issue69 LWG 69]
+|C++98
+|Việc lưu trữ các phần tử của vector liền kề nhau không bắt buộc 
+|bắt buộc
+|-
+|[https://cplusplus.github.io/LWG/issue464 LWG 464]
+|C++98
+|Truy cập phần lưu trữ cơ bản của một vector trống cho ra kết quả trong UB
+|Đã thêm hàm dữ liệu
+|}
