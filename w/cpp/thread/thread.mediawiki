@@ -1,0 +1,90 @@
+Thư viện hỗ trợ luồng
+
+'''<code>std::thread</code>'''
+{| class="wikitable"
+|Được xác định trong tiêu đề <code><thread></code>
+|
+|
+|-
+|class thread;
+|
+|(từ C++11)
+|}
+Lớp ''thread'' đại diện cho [[wikipedia:Thread_(computing)|một luồng thực hiện duy nhất]]. Luồng cho phép nhiều chức năng thực hiện đồng thời. Các luồng bắt đầu thực thi ngay lập tức khi xây dựng đối tượng luồng liên quan (chờ đợi bất kỳ sự chậm trễ lập lịch của hệ điều hành), bắt đầu ở hàm cao nhất được cung cấp dưới dạng [https://en.cppreference.com/w/cpp/thread/thread/thread đối số của hàm xây dựng]. Giá trị trả về của hàm cấp cao nhất bị bỏ qua, và nếu nó kết thúc bằng cách ném ra một ngoại lệ, [[std::terminate]] sẽ được gọi. Hàm cấp cao nhất có thể truyền đạt giá trị trả về của nó hoặc một ngoại lệ thông qua [https://en.cppreference.com/w/cpp/thread/promise std::promise] hoặc thay đổi các biến được chia sẻ ( có thể yêu cầu được đồng bộ hóa, xem [https://en.cppreference.com/w/cpp/thread/mutex std::mutex] và [https://en.cppreference.com/w/cpp/atomic/atomic std::atomic])
+
+Không thể có hai đối tượng std::thread nào có thể đại diện cho cùng một luồng thực thi; std::thread không phải là [https://en.cppreference.com/w/cpp/named_req/CopyConstructible CopyConstructible] hoặc [https://en.cppreference.com/w/cpp/named_req/CopyAssignable CopyAssignable], mặc dù nó là [https://en.cppreference.com/w/cpp/named_req/MoveConstructible MoveConstructible] and [https://en.cppreference.com/w/cpp/named_req/MoveAssignable MoveAssignable].
+=== Các loại thành viên ===
+{| class="wikitable"
+|Loại thành viên
+|Định nghĩa
+|-
+|<code>native_handle_type</code><small>(không phải lúc nào cũng hiện diện)</small>
+|Định nghĩa xử lý
+|}
+=== Các lớp thành viên ===
+{| class="wikitable"
+|id
+|đại diện cho ''id'' của một chủ đề
+<small>(lớp thành viên công khai)</small>
+|}
+=== ''Chức năng thành viên'' ===
+{| class="wikitable"
+|[https://en.cppreference.com/w/cpp/thread/thread/thread (constructor)]
+|Xây dựng đối tượng luồng mới
+<small>(hàm thành viên công khai)</small>
+|-
+|[https://en.cppreference.com/w/cpp/thread/thread/~thread (constructor)]
+|Hủy đối tượng luồng, luồng cơ bản phải được nối hoặc tách rời
+<small>(hàm thành viên công khai)</small>
+|-
+|'''[https://en.cppreference.com/w/cpp/thread/thread/operator%3D operator=]'''
+|Di chuyển đối tượng luồng
+<small>(hàm thành viên công khai)</small>
+|-
+| colspan="2" |
+===== ''Quan sát'' =====
+|-
+|'''[https://en.cppreference.com/w/cpp/thread/thread/joinable joinable]'''
+|Kiểm tra xem luồng có thể tham gia được hay không, tức là có khả năng chạy trong bối cảnh song song
+<small>(hàm thành viên công khai)</small>
+|-
+|'''[https://en.cppreference.com/w/cpp/thread/thread/get_id get_id]'''
+|Trả về ''id'' của luồng
+<small>(hàm thành viên công khai)</small>
+|-
+|'''[https://en.cppreference.com/w/cpp/thread/thread/native_handle native_handle]'''
+|Trả về quản lý luồng dưới dạng triển khai cơ bản
+<small>(hàm thành viên công khai)</small>
+|-
+|'''[https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency hardware_concurrency]''' <small>[static]</small>
+|Trả về số lượng luồng đồng thời được hỗ trợ bởi quá trình triển khai
+<small>(hàm thành viên công khai)</small>
+|-
+| colspan="2" |
+===== ''Hoạt động'' =====
+|-
+|'''[https://en.cppreference.com/w/cpp/thread/thread/join join]'''
+|Chờ cho luồng kết thúc việc thực hiện
+<small>(hàm thành viên công khai)</small>
+|-
+|'''[https://en.cppreference.com/w/cpp/thread/thread/detach detach]'''
+|Cho phép luồng thực thi độc lập với quản lý luồng
+<small>(hàm thành viên công khai)</small>
+|-
+|'''[https://en.cppreference.com/w/cpp/thread/thread/swap swap]'''
+|Hoán đổi hai đối tượng luồng
+<small>(hàm thành viên công cộng)</small>
+|}
+=== Chức năng không phải thành viên ===
+{| class="wikitable"
+|[https://en.cppreference.com/w/cpp/thread/thread/swap2 std::swap <small>(std::thread)</small>] <small>(C++11)</small>
+|Chuyên thuật toán std::swap
+<small>(hàm)</small>
+|}
+=== Xem thêm ===
+{| class="wikitable"
+|[https://en.cppreference.com/w/cpp/thread/jthread jthread]
+<small>(C++20)</small>
+|'''std::thread''' với sự hỗ trợ cho tự động tham gia và hủy bỏ
+(class)
+|}
