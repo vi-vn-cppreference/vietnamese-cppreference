@@ -1,18 +1,23 @@
 ==[https://en.cppreference.com/w/cpp/memory/auto_ptr std::auto_ptr]==
-Được định nghĩa trong header [https://en.cppreference.com/w/cpp/header/memory <memory>]<syntaxhighlight lang="cpp">
-template< class T > class auto_ptr;    (1)
-</syntaxhighlight><syntaxhighlight lang="cpp">
-template<> class auto_ptr<void>;       (2)
-</syntaxhighlight>(1) Không dùng ở C++11 và bị loại bỏ hẳn ở C++17
+Được định nghĩa trong header [https://en.cppreference.com/w/cpp/header/memory <memory>]
+<code lang="cpp">
+template< class T > class auto_ptr;
+</code> (1)
+<code lang="cpp">
+template<> class auto_ptr<void>;
+</code> (2)
+
+(1) Không dùng ở C++11 và bị loại bỏ hẳn ở C++17
 (2) Không dùng ở C++11 và bị loại bỏ hẳn ở C++17
 
-auto_ptr là một con trỏ thông minh, nó quản lý các đối tượng thông qua [https://en.cppreference.com/w/cpp/language/new new expression] và xóa đối tượng đó khi chính auto_ptr bị hủy. Nó có thể được sử dụng để đưa ra ngoại lệ một cách an toàn cho các đối tượng được phân bổ động bằng cách truyền vào quyền sở hữu của các đối tượng được phân bổ động vào hàm đó và trả về các đối tượng được phân bổ động từ chính hàm đó.
+auto_ptr là một con trỏ thông minh, nó quản lý các đối tượng thông qua [https://en.cppreference.com/w/cpp/language/new toán tử new] và xóa đối tượng đó khi chính auto_ptr bị hủy. Nó có thể được sử dụng để đưa ra ngoại lệ một cách an toàn cho các đối tượng được phân bổ động bằng cách truyền vào quyền sở hữu của các đối tượng được phân bổ động vào hàm đó và trả về các đối tượng được phân bổ động từ chính hàm đó.
 
-Sao chép một bản sao lưu của con trỏ auto_ptr và chuyển quyền sở hữu cho đích đến: cả việc sao chép bằng xây dựng và sao chép bằng phép gán của auto_ptr làm thay đổi đối số phía bên phải của nó, và bản sao chép sẽ không giống với bản gốc. Bởi vì những ngữ nghĩa việc sao chép khác thường do đó auto_ptr có thể không được dùng trong vùng chứa tiêu chuẩn của các dữ liệu có cùng kiểu. [https://en.cppreference.com/w/cpp/memory/unique_ptr std::unique_ptr] được ưu tiên hơn cho việc này và các trường hợp khác. (hỗ trợ từ C++11)
+Sao chép một bản sao lưu của con trỏ auto_ptr và chuyển quyền sở hữu cho đích đến: cả việc sao chép bằng xây dựng và sao chép bằng phép gán của auto_ptr làm thay đổi đối số phía bên phải của nó, và "bản sao chép" sẽ không giống với bản gốc. Bởi vì những ngữ nghĩa việc sao chép khác thường do đó auto_ptr có thể không được dùng trong kiểu dữ liệu tiêu chuẩn để chứa đựng. [https://en.cppreference.com/w/cpp/memory/unique_ptr std::unique_ptr] được ưu tiên hơn cho việc này và các trường hợp khác. (hỗ trợ từ C++11)
 
 2) Trường hợp đặc biệt đối với kiểu <code>void</code> khi được sử dụng, nó khai báo typedef element_type, nhưng không có hàm thành viên.
 
 Một khuôn mẫu lớp bổ sung của auto_ptr_ref được nhắc đến trong tài liệu. Đó là sự triển khai - kiểu đã được định nghĩa sẽ giữ một tham chiếu tới auto_ptr. Sự triển khai được cho phép đư ra một biểu mẫu với tên khác hoặc thực thi hàm mà trả về chính nó hoặc theo cách khác là nhận nó như tham số.
+
 ==Kiểu thành viên==
 {| class="wikitable"
 |+
@@ -22,6 +27,7 @@ Một khuôn mẫu lớp bổ sung của auto_ptr_ref được nhắc đến tro
 |<code>element_type</code>
 |<code>T</code>
 |}
+
 ==Hàm thành viên==
 {| class="wikitable"
 |+
@@ -30,7 +36,7 @@ Một khuôn mẫu lớp bổ sung của auto_ptr_ref được nhắc đến tro
 <small>(Hàm được phép tự do truy cập)</small>
 |-
 |[https://en.cppreference.com/w/cpp/memory/auto_ptr/~auto_ptr (destructor)]
-|Phá bỏ một auto_ptr và đối tượng được quản lý bởi nó
+|phá hủy một auto_ptr và đối tượng được quản lý bởi nó
 <small>(Hàm được phép tự do truy cập)</small>
 |-
 |'''[https://en.cppreference.com/w/cpp/memory/auto_ptr/operator%3D operator=]'''
@@ -39,7 +45,7 @@ Một khuôn mẫu lớp bổ sung của auto_ptr_ref được nhắc đến tro
 |-
 |'''[https://en.cppreference.com/w/cpp/memory/auto_ptr/operator_auto_ptr operator auto_ptr<Y>]'''
 '''[https://en.cppreference.com/w/cpp/memory/auto_ptr/operator_auto_ptr operator auto_ptr_ref<Y>]'''
-|Chuyển con trỏ được quản lý thành một con trỏ có kiểu khác
+|chuyển đổi con trỏ được quản lý thành một con trỏ có kiểu khác
 <small>(Hàm được phép tự do truy cập)</small>
 |}
 
@@ -60,10 +66,10 @@ Một khuôn mẫu lớp bổ sung của auto_ptr_ref được nhắc đến tro
 {| class="wikitable"
 |+
 |'''[https://en.cppreference.com/w/cpp/memory/auto_ptr/reset reset]'''
-|Thay thế đối tượng được quản lý
+|thay thế đối tượng được quản lý
 <small>(Hàm được phép tự do truy cập)</small>
 |-
 |'''[https://en.cppreference.com/w/cpp/memory/auto_ptr/release release]'''
-|Từ bỏ quyền sở hửu đối với đối tượng đang quản lý
+|từ bỏ quyền sở hửu đối với đối tượng đang quản lý
 <small>(Hàm được phép tự do truy cập)</small>
 |}
