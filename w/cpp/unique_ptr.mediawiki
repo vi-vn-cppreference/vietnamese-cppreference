@@ -1,0 +1,320 @@
+==[https://en.cppreference.com/w/cpp/memory/unique_ptr std::unique_ptr]==
+Được định nghĩa trong header [https://en.cppreference.com/w/cpp/header/memory <memory>]<syntaxhighlight lang="cpp">
+template<
+    class T,
+    class Deleter = std::default_delete<T>        (1)
+> class unique_ptr;
+</syntaxhighlight>(1) Hỗ trợ từ C++ 11<syntaxhighlight lang="cpp">
+template <
+    class T,
+    class Deleter                              (2)
+> class unique_ptr<T[], Deleter>;
+</syntaxhighlight>(2) Hỗ trợ từ C++ 11
+std::unique_ptr là một con trỏ thông minh, nó sở hửu và quản lý một đối tướng khác thông qua con trỏ và loai bỏ đối tượng đó khi unique_ptr thoát ra khỏi phạm vị hoạt động.
+
+Đối tượng bị loại bỏ sử dụng deleter đã điên kết khi một trong hai điều sau xảy ra:
+*unique_ptr quản lý đối tượng bị hủy
+*unique_ptr quản lý đối tượng được gán cho một con trỏ khác thông qua [https://en.cppreference.com/w/cpp/memory/unique_ptr/operator%3D operator=] hoặc [https://en.cppreference.com/w/cpp/memory/unique_ptr/reset reset()].
+Một unique_ptr có thế không sở hữu đối tượng nào cả, trường hợp này được gọi là trống.
+
+Có 2 kiểu của std::unique_ptr:
+#Quản lý một đối tượng duy nhất ( ví dụ: phân bổ bằng <code>new</code>)
+#Quản lý một mảng các đối tượng được phân bổ động ( ví dụ: phân bổ bằng <code>new[]</code>)
+Lớp thỏa mãn những yêu cầu của [https://en.cppreference.com/w/cpp/named_req/MoveConstructible MoveConstructible] và [https://en.cppreference.com/w/cpp/named_req/MoveAssignable MoveAssignable] nhưng không thỏa [https://en.cppreference.com/w/cpp/named_req/CopyConstructible CopyConstructible] và [https://en.cppreference.com/w/cpp/named_req/CopyAssignable CopyAssignable].
+=='''Các loại điều kiện'''==
+*Deleter phải là [https://en.cppreference.com/w/cpp/named_req/FunctionObject FunctionObject] hoặc lvalue tham chiếu tới hàm, có thể gọi được với đối số thuộc kiểu unique_ptr<T, Deleter>::pointer
+=='''Lưu ý'''==
+Chỉ nó unique_ptr không phải là unique_ptr hằng mới có thể chuyển quyền sở hửu đối với những đối tượng đang quản lý sang một unique_ptr khác. Nếu vòng đời của một đối tượng được quản lý bởi <code>const std::unique_ptr</code>, nó sẽ được giới hạn phạm vi hoạt động ở trong vùng mà con trỏ đó được tạo.
+
+std::unique_ptr thường được dùng để quản lý vòng đời của đối tượng, bao gồm:
+*Cung cấp những ngoại lệ an toàn cho lớp và hàm để xử lý đối tượng cùng với thời gian vòng đời linh hoạt bằng cách đảm bảo việc xóa trong cả trường hợp kết thúc bình thường và kết thúc thông qua ngoại lệ.
+*truyền quyền sở hữu duy nhất của đối tượng với vòng đời linh hoạt vào hàm.
+*Thu hồi quyền sở hữu duy nhất của đối tượng với vòng đời linh hoạt từ hàm.
+*Như là một loại phần tử trong tập hợp dữ liệu, chẳng hạn như [https://en.cppreference.com/w/cpp/container/vector std::vector], nó giữ con trỏ trỏ đến các đối tượng được phân bổ động ( Ví dụ: nếu tính đa hình được thỏa mãn)
+std::unique_ptr được xây dựng cho một [https://en.cppreference.com/w/cpp/language/type#Incomplete_type incomplete type] T, chẳng hạn như tạo điều kiện thuận lợi cho việc xử lý [https://en.cppreference.com/w/cpp/language/pimpl pimpl idiom]. Nếu deleter mặc định được sử dụng, T phải được hoàn thành tại nơi mà deleter được gọi, nó xảy ra trong hàm phá hủy, tmove assignment operator, và đặt lại hàm thành viên của std::unique_ptr. (Ngược lại, [https://en.cppreference.com/w/cpp/memory/shared_ptr std:::share_ptr] không thể được xây dựng từ con trỏ thuần thuần túy đến kiểu không hoàn chỉnh, nhưng có thể bị hủy tại nơi mà T chưa hoàn thiện. Lưu ý là nếu T là một khuôn mẫu lớp chuyển dùng, sử dụng unique_ptr như một toán hạng, ví dụ: <code>!p</code> yêu cầu tham số của T phải được hoàn thiện bởi vì [https://en.cppreference.com/w/cpp/language/adl ADL].
+
+Nếu T là một [https://en.cppreference.com/w/cpp/language/derived_class lớp kế thừa] của class cơ sở B, thì <code>std::unique_ptr<T></code> được [https://en.cppreference.com/w/cpp/memory/unique_ptr/unique_ptr ngầm định chuyển đổi]sang [https://en.cppreference.com/w/cpp/language/destructor#Virtual_destructors <code>std::unique_ptr<nowiki><B></nowiki></code>. Deleter mặc định của <code>std::unique_ptr<nowiki><B></nowiki></code> sẽ dùng operator delete cho B, dẫn tới undefined behavior] nếu hàm phá hủy của B không phải là hàm [https://en.cppreference.com/w/cpp/language/virtual virtual]. Lưu ý là [https://en.cppreference.com/w/cpp/memory/shared_ptr std::share_ptr] hoạt động khác: <code>[https://en.cppreference.com/w/cpp/memory/shared_ptr std::shared_ptr]<nowiki><B></nowiki></code> sẽ dùng operator delete cho kiểu T và đối tượng nó đang sở hữu sẽ bị xóa một cách chính xác thậm chí nếu hàm hủy của B không phải là hàm [https://en.cppreference.com/w/cpp/language/virtual virtual]
+
+Không giống như [https://en.cppreference.com/w/cpp/memory/shared_ptr std::shared_ptr], std::unique_ptr sẽ quản lý một đối tượng thông qua mọi kiểu xử lý được tùy biến mà nó thỏa mãn [https://en.cppreference.com/w/cpp/named_req/NullablePointer NullablePointer] . Điều này cho phép, ví dụ, quản lý các đối tượng trong vùng nhớ được chia sẻ, bằng cách cho một Deleter mà nó định nghĩa kiểu con trỏ [https://www.boost.org/doc/libs/release/doc/html/boost/interprocess/offset_ptr.html boost::offset_ptr] hoặc [https://en.cppreference.com/w/cpp/named_req/Allocator#Fancy_pointers fancy pointer] khác.
+
+[https://en.cppreference.com/w/cpp/feature_test#Library_features Feature testing] macro: [https://en.cppreference.com/w/cpp/utility/feature_test __cpp_lib_constexpr_memory]
+=='''Loại thành viên'''==
+{| class="wikitable"
+|+
+!Loại thành viên
+!Định nghĩa
+|-
+|<code>pointer</code>
+|<code>[http://en.cppreference.com/w/cpp/types/remove_reference std:remove_reference]<Deleter>::type::pointer</code> nếu kiểu này tồn tại, về phương diện khác T*. Phải thỏa mãn yêu cầu của [https://en.cppreference.com/w/cpp/named_req/NullablePointer NullablePointer]
+|-
+|<code>element_type</code>
+|T, loại đối tướng này được quản lý bởi unique_ptr
+|-
+|<code>deleter_type</code>
+|Deleter, các hàm đối tượng hoặc lvalue tham chiếu đến hàm hoặc tham chiếu đến hàm đối tượng sẽ được gọi từ hàm phá hủy
+|}
+=='''Hàm thành viên'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/unique_ptr (hàm xây dựng)]
+|xây dựng unique_ptr mới
+<small>(Hàm được phép tự do truy cập)</small>
+|-
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/~unique_ptr (hàm phá hủy)]
+|Phá hủy đối tượng được quản lý nếu chúng tồn tại
+<small>(Hàm được phép tự do truy cập)</small>
+|-
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator%3D operator=]
+|gán vào unique_ptr
+<small>(Hàm được phép tự do truy cập)</small>
+|}
+===Modifier===
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/release release]
+|Trả về con trỏ trỏ tới đối tượng được quản lý và trả quyền sở hữu
+<small>(Hàm được phép tự do truy cập)</small>
+|-
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/reset reset]
+|Thay thế đối tượng được quản lý
+<small>(Hàm được phép tự do truy cập)</small>
+|-
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/swap swap]
+|Hoán đổi đối tượng được quản lý
+<small>(Hàm được phép tự do truy cập)</small>
+|}
+===Obeservers===
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/get get]
+|Trả về một con trỏ trỏ tới đối tượng được quản lý
+<small>(Hàm được phép tự do truy cập)</small>
+|-
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/get_deleter get_deleter]
+|Trả về deleter được dụng cho việc phá hủy đối tượng bị quản lý
+<small>(Hàm được phép tự do truy cập)</small>
+|-
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_bool operator bool]
+|Kiểm tra xem đối tượng được quản lý chưa
+<small>(Hàm được phép tự do truy cập)</small>
+|}
+===Trường hợp: một đối tượng, unique_ptr<T>===
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator* operator*]
+[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator* operator ->]
+|Truy cập vào đối tượng được quản lý bởi con trỏ
+<small>(Hàm được phép tự do truy cập)</small>
+|}
+===Trường hợp: mảng, unique_ptr<T[ ]>===
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_at <nowiki>operator[ ]</nowiki>]
+|Đưa ra chỉ số để truy cấp vào mảng đang được quản lý
+|}
+=='''Không phải là hàm thành viên'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique make_unique] (C++14)
+[https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique make_unique_for_overwrite] (C++20)
+|Tạo ra một con trỏ duy nhất quản lý một đối tượng mới
+<small>(Khuôn mẫu hàm)</small>
+|}
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_cmp operator==]
+[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_cmp operator !=] (bị loại bỏ trong C++20)
+
+[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_cmp operator<]
+
+[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_cmp operator<=]
+
+[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_cmp operator>]
+
+[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_cmp operator>=]
+
+[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_cmp operator<=>] (C++20)
+|So sánh với unique_ptr kahcs hoặc với <code>nullptr</code>
+<small>(Khuôn mẫu hàm)</small>
+|}
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/operator_ltlt operator<<] (C++20)
+|Xuất ra giá trị của con trỏ được quản lý tới một luồng đầu ra
+<small>(Khuôn mẫu hàm)</small>
+|}
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/swap2 std::swap<small>(std::unique_ptr)</small>] (C++11)
+|Chỉ định thuật toán [https://en.cppreference.com/w/cpp/algorithm/swap std::swap]
+<small>(Khuôn mẫu hàm)</small>
+|}
+=='''Lớp hỗ trợ'''==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/unique_ptr/hash std::hash<<small>std::unique_ptr></small>] (C++11)
+|Hỗ trợ băm cho '''std::unique_ptr'''
+<small>(Khuôn mẫu lớp chuyên dùng)</small>
+|}
+=='''Ví dụ'''==
+<syntaxhighlight lang="cpp">
+#include <cassert>
+#include <cstdio>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+
+// helper class for runtime polymorphism demo below
+struct B {
+    virtual ~B() = default;
+
+    virtual void bar() { std::cout << "B::bar\n"; }
+};
+
+struct D : B {
+    D() { std::cout << "D::D\n"; }
+    ~D() { std::cout << "D::~D\n"; }
+
+    void bar() override { std::cout << "D::bar\n"; }
+};
+
+// a function consuming a unique_ptr can take it by value or by rvalue reference
+std::unique_ptr<D> pass_through(std::unique_ptr<D> p) {
+    p->bar();
+    return p;
+}
+
+// helper function for the custom deleter demo below
+void close_file(std::FILE* fp) {
+    std::fclose(fp);
+}
+
+// unique_ptr-based linked list demo
+struct List {
+    struct Node {
+        int data;
+        std::unique_ptr<Node> next;
+    };
+
+    std::unique_ptr<Node> head;
+
+    ~List() {
+        // destroy list nodes sequentially in a loop, the default destructor
+        // would have invoked its `next`'s destructor recursively, which would
+        // cause stack overflow for sufficiently large lists.
+        while (head)
+            head = std::move(head->next);
+    }
+
+    void push(int data) {
+        head = std::unique_ptr<Node>(new Node{data, std::move(head)});
+    }
+};
+
+int main() {
+    std::cout << "1) Unique ownership semantics demo\n";
+    {
+        // Create a (uniquely owned) resource
+        std::unique_ptr<D> p = std::make_unique<D>();
+
+        // Transfer ownership to `pass_through`,
+        // which in turn transfers ownership back through the return value
+        std::unique_ptr<D> q = pass_through(std::move(p));
+
+        // `p` is now in a moved-from 'empty' state, equal to `nullptr`
+        assert(!p);
+    }
+
+    std::cout << "\n"
+                 "2) Runtime polymorphism demo\n";
+    {
+        // Create a derived resource and point to it via base type
+        std::unique_ptr<B> p = std::make_unique<D>();
+
+        // Dynamic dispatch works as expected
+        p->bar();
+    }
+
+    std::cout << "\n"
+                 "3) Custom deleter demo\n";
+    std::ofstream("demo.txt") << 'x';  // prepare the file to read
+    {
+        using unique_file_t = std::unique_ptr<std::FILE, decltype(&close_file)>;
+        unique_file_t fp(std::fopen("demo.txt", "r"), &close_file);
+        if (fp)
+            std::cout << char(std::fgetc(fp.get())) << '\n';
+    }  // `close_file()` called here (if `fp` is not null)
+
+    std::cout << "\n"
+                 "4) Custom lambda-expression deleter and exception safety demo\n";
+    try {
+        std::unique_ptr<D, void (*)(D*)> p(new D, [](D* ptr) {
+            std::cout << "destroying from a custom deleter...\n";
+            delete ptr;
+        });
+
+        throw std::runtime_error("");  // `p` would leak here if it were instead a plain pointer
+    } catch (const std::exception&) {
+        std::cout << "Caught exception\n";
+    }
+
+    std::cout << "\n"
+                 "5) Array form of unique_ptr demo\n";
+    {
+        std::unique_ptr<D[]> p(new D[3]);
+    }  // `D::~D()` is called 3 times
+
+    std::cout << "\n"
+                 "6) Linked list demo\n";
+    {
+        List wall;
+        for (int beer = 0; beer != 1'000'000; ++beer)
+            wall.push(beer);
+
+        std::cout << "1'000'000 bottles of beer on the wall...\n";
+    }  // destroys all the beers
+}
+</syntaxhighlight>Kết quả đầu ra có thể là:<syntaxhighlight lang="cpp">
+1) Unique ownership semantics demo
+D::D
+D::bar
+D::~D
+ 
+2) Runtime polymorphism demo
+D::D
+D::bar
+D::~D
+ 
+3) Custom deleter demo
+x
+ 
+4) Custom lambda-expression deleter and exception safety demo
+D::D
+destroying from a custom deleter...
+D::~D
+Caught exception
+ 
+5) Array form of unique_ptr demo
+D::D
+D::D
+D::D
+D::~D
+D::~D
+D::~D
+ 
+6) Linked list demo
+1'000'000 bottles of beer on the wall...
+</syntaxhighlight>
+
+== '''Xem thêm''' ==
+{| class="wikitable"
+|+
+|[https://en.cppreference.com/w/cpp/memory/shared_ptr share_ptr] (C++11)
+|Con trỏ thông minh với quyền quản lý được chia sẻ 
+<small>(Khuôn mẫu lớp)</small>
+|-
+|[https://en.cppreference.com/w/cpp/memory/weak_ptr week_ptr] (C++11)
+|Tham chiếu đến đối tượng được quản lý bởi [https://en.cppreference.com/w/cpp/memory/shared_ptr std::shared_ptr] nhưng không bảo vệ nó
+<small>(Khuôn mẫu lớp)</small>
+|}
