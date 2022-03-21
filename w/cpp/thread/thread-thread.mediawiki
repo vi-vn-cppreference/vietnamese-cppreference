@@ -1,0 +1,188 @@
+{| class="wikitable"
+|thread() noexcept;
+|(1)
+|(từ C++11)
+|-
+|thread( thread&& other ) noexcept;
+|(2)
+|(từ C++11)
+|-
+|template< class Function, class... Args >
+explicit thread( Function&& f, Args&&... args );
+|(3)
+|(từ C++11)
+|-
+|thread( const thread& ) = delete;
+|(4)
+|(từ C++11)
+|-
+|}
+Xây dựng đối tượng luồng mới.
+
+1) Tạo một đối tượng luồng mới không đại diện cho một luồng.
+
+2) Di chuyển hàm xây dựng. Xây dựng đối tượng luồng để đại diện cho luồng thực thi. Sau cuộc gọi này, lệnh khác không còn đại diện cho một chuỗi thực thi nữa.
+
+3) Xây dựng đối tượng <code>std::thread</code> mới và liên kết nó với một luồng thực thi được đại diện bởi luồng khác. Luồng thực thi mới được bắt đầu thực thi <code>/*INVOKE*/(std::move(f_copy), std::move(args_copy)...)</code>, nơi mà
+* <code>''/*INVOKE*/''</code> thực hiện ''INVOKE hoạt động được chỉ định trong'' [https://en.cppreference.com/w/cpp/named_req/Callable Callable], mà có thể được thực hiện bởi [https://en.cppreference.com/w/cpp/utility/functional/invoke std::invoke] (''từ C++17''), và
+* <code>f_copy</code> là một đối tượng của kiểu <code>[http://en.cppreference.com/w/cpp/types/decay std::decay]<Function>::type</code> và được xây dựng từ <code>[http://en.cppreference.com/w/cpp/utility/forward std::forward]<Function>(f)</code>, và
+* <code>args_copy...</code> là đối tượng của các kiểu <code>std::decay<Args>::type..</code> và được xây dựng từ <code>[http://en.cppreference.com/w/cpp/utility/forward std::forward]<Args>(args)...</code>'''.'''
+Các cấu trục của các đối tượng này là thực thi trong bối cảnh của trình gọi, để bất kỳ ngoại lệ nào cũng được đưa ra trong quá trình đánh giá và sao chép/di chuyển của các đối số được ném vào luồng hiện tại, mà không bắt đầu luồng mới. Chương trình không được hình thành nếu bất kỳ trình xây dựng hay hoạt động không hợp lệ. ''INVOKE''
+
+Hàm xây dựng này không tham dự vào giải pháp nạp chồng nếu <code>[http://en.cppreference.com/w/cpp/types/decay std::decay]<Function>::type</code> cùng một kiểu với luồng.
+
+Việc hoàn thành lời gọi của trình xây dựng được ‎''‎đồng bộ hóa-với‎''‎ (như được định nghĩa trong [https://en.cppreference.com/w/cpp/atomic/memory_order ‎‎std::memory_order]‎‎) sự bắt đầu của lệnh gọi bản sao của f trên luồng thực thi mới.
+
+4) Hàm tạo bản sao bị xóa; luồng không thể sao chép. Không có 2 đối tượng <code>std::thread</code> nào có thể đại diện cho cùng một luồng thực thi.
+=== Các tham số ===
+{| class="wikitable"
+|other
+| -
+|một đối tượng luồng khác để xây dựng đối tượng luồng này với
+|-
+|f
+| -
+|đối tượng [https://en.cppreference.com/w/cpp/named_req/Callable Callable] để thực thi trong chuỗi mới
+|-
+|args...
+| -
+|các đối số để chuyển cho hàm mới
+|}
+=== [[wikipedia:Postcondition|Hậu điều kiện]] ===
+1) [https://en.cppreference.com/w/cpp/thread/thread/get_id get_id()] bằng với std::thread::id() (tức là [https://en.cppreference.com/w/cpp/thread/thread/thread#:~:text=get_id()%20equal%20to%20std%3A%3Athread%3A%3Aid()%20(i.e.-,joinable,-is joinable] là sai)
+
+2) other.get_id() bằng với [https://en.cppreference.com/w/cpp/thread/thread/id std::thread::id()] and [https://en.cppreference.com/w/cpp/thread/thread/get_id get_id()] trả về giá trị của other.get_id() trước khi bắt đầu trình xây dựng
+
+3) [https://en.cppreference.com/w/cpp/thread/thread/get_id get_id()] không bằng với std::thread::id() (tức là [https://en.cppreference.com/w/cpp/thread/thread/thread#:~:text=get_id()%20equal%20to%20std%3A%3Athread%3A%3Aid()%20(i.e.-,joinable,-is joinable] là đúng)
+=== Ngoại lệ ===
+3) [https://en.cppreference.com/w/cpp/error/system_error std::system_error] nếu một luồng không thể bắt đầu. Ngoại lệ có thể đại diện cho điều kiện lỗi <code>std::errc::resource_unavailable_try_again</code> hoặc lỗi khác về triển khai đặc biệt.
+=== Ghi chú ===
+Các đối số của hàm luồng được di chuyển hoặc sao chép theo giá trị. Nếu một đối số tham chiếu cần được truyền cho hàm luồng, thì nó phải được bao bọc (ví dụ: với [https://en.cppreference.com/w/cpp/utility/functional/ref std::ref] hoặc [https://en.cppreference.com/w/cpp/utility/functional/ref std::cref]).
+
+Mọi giá trị trả về từ hàm đều bị bỏ qua. Nếu hàm ném ra một ngoại lệ, [https://en.cppreference.com/w/cpp/error/terminate std::terminate] được gọi. Để chuyển các giá trị trả về hoặc các ngoại lệ trở lại luồng đang gọi, có thể sử dụng [https://en.cppreference.com/w/cpp/thread/promise std::promise] hoặc [https://en.cppreference.com/w/cpp/thread/async std::async].
+=== Ví dụ ===
+Run this code
+ #include <iostream>
+ #include <utility>
+ #include <thread>
+ #include <chrono>
+  
+ void f1(int n)
+ {
+     for (int i = 0; i < 5; ++i) {
+         std::cout << "Thread 1 executing\n";
+         ++n;
+         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+     }
+ }
+  
+ void f2(int& n)
+ {
+     for (int i = 0; i < 5; ++i) {
+         std::cout << "Thread 2 executing\n";
+         ++n;
+         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+     }
+ }
+  
+ class foo
+ {
+ public:
+     void bar()
+     {
+         for (int i = 0; i < 5; ++i) {
+             std::cout << "Thread 3 executing\n";
+             ++n;
+             std::this_thread::sleep_for(std::chrono::milliseconds(10));
+         }
+     }
+     int n = 0;
+ };
+  
+ class baz
+ {
+ public:
+     void operator()()
+     {
+         for (int i = 0; i < 5; ++i) {
+             std::cout << "Thread 4 executing\n";
+             ++n;
+             std::this_thread::sleep_for(std::chrono::milliseconds(10));
+         }
+     }
+     int n = 0;
+ };
+  
+ int main()
+ {
+     int n = 0;
+     foo f;
+     baz b;
+     std::thread t1; // t1 không phải là một luồng
+     std::thread t2(f1, n + 1); // truyền bởi giá trị
+     std::thread t3(f2, std::ref(n)); // truyền bởi tham chiếu
+     std::thread t4(std::move(t3)); // t4 bây giờ đang chạy f2(). t3 không còn là một luồng
+     std::thread t5(&foo::bar, &f); // t5 chạy foo::bar() trên đối tượng f
+     std::thread t6(b); // t6 chạy baz::operator() trên một bản sao của đối tượng b
+     t2.join();
+     t4.join();
+     t5.join();
+     t6.join();
+     std::cout << "Final value of n is " << n << '\n';
+     std::cout << "Final value of f.n (foo::n) is " << f.n << '\n';
+     std::cout << "Final value of b.n (baz::n) is " << b.n << '\n';
+ }
+Đầu ra có thể là:
+ Thread 1 executing
+ Thread 2 executing
+ Thread 3 executing
+ Thread 4 executing
+ Thread 3 executing
+ Thread 1 executing
+ Thread 2 executing
+ Thread 4 executing
+ Thread 2 executing
+ Thread 3 executing
+ Thread 1 executing
+ Thread 4 executing
+ Thread 3 executing
+ Thread 2 executing
+ Thread 1 executing
+ Thread 4 executing
+ Thread 3 executing
+ Thread 1 executing
+ Thread 2 executing
+ Thread 4 executing
+ Final value of n is 5
+ Final value of f.n (foo::n) is 5
+ Final value of b.n (baz::n) is 0
+=== Báo cáo sai sót ===
+Các báo cáo lỗi thay đổi hành vi sau đây đã được áp dụng trở về trước cho các tiêu chuẩn C ++ đã xuất bản trước đó.
+{| class="wikitable"
+!DR
+!Đã áp dụng từ
+!Hành vi như đã được phát hành
+!Hành vi đúng
+|-
+|[https://cplusplus.github.io/LWG/issue2097 LWG 2097]
+|C++11
+|phương thức khởi tạo lấy một đối tượng ''Có thể gọi'' có thể không rõ ràng với phương thức khởi tạo di chuyển
+|Hạn chế
+|}
+=== Tham khảo ===
+* C++20 standard (ISO/IEC 14882:2020):
+:* 32.4.2.2 thread constructors [thread.thread.constr]
+* C++17 standard (ISO/IEC 14882:2017):
+:* 33.3.2.2 thread constructors [thread.thread.constr]
+* C++14 standard (ISO/IEC 14882:2014):
+:* 30.3.1.2 thread constructors [thread.thread.constr]
+* C++11 standard (ISO/IEC 14882:2011):
+:* 30.3.1.2 thread constructors [thread.thread.constr]
+=== Xem thêm ===
+{| class="wikitable"
+|[https://en.cppreference.com/w/cpp/thread/jthread/jthread (constructor)]
+|Xây dựng đối thượng ''jthread'' mới
+(Hàm công khai của <code>std::jthread</code>)
+|-
+| colspan="2" |[https://en.cppreference.com/w/c/thread/thrd_create C documentation] for '''thrd_create'''
+|}
