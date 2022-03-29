@@ -1,0 +1,215 @@
+Một union là một loại lớp đặc biết mà nó chỉ có thể nắm giữ một trong số các [https://en.cppreference.com/w/cpp/language/data_members data members] không tĩnh tại một thời điểm.
+
+Lớp chỉ định cho cách khai báo một union tương tự với cách khai báo [https://en.cppreference.com/w/cpp/language/class class or struct]:
+
+'''union''' ''attr class-head-name'' '''{''' ''member-sepcification'' '''}'''
+
+'''''attr''' -'' (hỗ trợ từ C++11) Tùy chỉnh được trình tự của các [https://en.cppreference.com/w/cpp/language/attributes attributes]
+
+'''''class-head-name''''' - Tên của union đang được định nghĩa, có thể được viết trước bởi ''nested-name-specifier'' (trình tự của tên và toán tử chỉ định ngữ cảnh được kết thúc bởi toán tử chỉ định ngữ cảnh). Tên có thể bị bỏ sót, trong trường hợp này union là ''unamed.''
+
+'''''member-specification''''' ''-'' Danh sách các quyền truy cập, đối tượng thành viên và hàm thành viên đã được khai báo và định nghĩa.
+
+Một union có thể có nhiều hàm thành viên (bao gồm cả hàm xây dựng và hàm phá hủy) nhưng không phải là hàm ảo.
+
+Một union không thể nhiều lớp cơ sở và không thể được sử dụng như một lớp cơ sở.
+
+Một union không thể có kiểu tham chiếu không tĩnh đến dữ liệu của các thành viên.
+{| class="wikitable"
+|+
+|Union không thể chứa một dữ liệu thành viên không tĩnh cùng với một hàm thành viên thông thường ([https://en.cppreference.com/w/cpp/language/copy_constructorCopy&#x20;constructror copy constructror], [https://en.cppreference.com/w/cpp/language/copy_assignment copy-assignment] operator, hay [https://en.cppreference.com/w/cpp/language/destructor destructor]). <small>(Hỗ trợ đến C++11)</small>
+|-
+|Nếu một union chứa một dữ liệu thành viên không tĩnh cùng với một hàm thành viên thông thường([https://en.cppreference.com/w/cpp/language/copy_constructor copy]/[https://en.cppreference.com/w/cpp/language/move_constructor move] constructor, [https://en.cppreference.com/w/cpp/language/copy_assignment copy]/[https://en.cppreference.com/w/cpp/language/move_assignment move] assignment, hoặc [https://en.cppreference.com/w/cpp/language/destructor destructor]), hàm đó sẽ bị xóa ( mặc định ở trong union) và cần phải được định nghĩa một cách rõ ràng bởi lập trình viên.
+Nếu một union chứa một dữ liệu thành viên không tĩnh cùng với một [https://en.cppreference.com/w/cpp/language/default_constructor default constructor] thông thường, hàm khởi tạo mặc định của union bị xóa bởi mặc định nếu một [https://en.cppreference.com/w/cpp/language/union#Union-like_classes variant member] của union không có một trình mặc định khởi tạo thành viên.
+
+Ít nhất một [https://en.cppreference.com/w/cpp/language/union#Union-like_classes variant member] có thể có một [https://en.cppreference.com/w/cpp/language/data_members#Member_initialization default member initializer].<small>(Hỗ trợ từ C++11)</small>
+|}
+Giống như trong cách khai báo [https://en.cppreference.com/w/cpp/language/classes struct], giới hạn truy cập mặc định của các thành viên trong một union là [https://en.cppreference.com/w/cpp/language/access public].
+==Giải thích==
+Union chỉ thực lớn khi chúng chứa lượng dữ liệu thành viên lớn nhất. Các loại dữ liệu thành viên khác được phân bổ trong cùng bytes như là một phần dữ liệu của thành viên lớn nhất. Chi tiết của viêc phân bổ là việc triển khai đã được xác định nhưng không phải tất cả cả dữ liệu thành viên không tỉnh sẽ có cùng một địa chỉ (hỗ trợ từ C++14). Nó là hành vi không được định nghĩa trước để đọc từ thành viên của union rằng nó không phải vừa mới được ghi. Nhiều trình biên dịch khi thực thi không phải là chuẩn mở rộng của ngôn ngữ và khả năng đọc các thành viên không hoạt động của một union.<syntaxhighlight lang="cpp">
+#include <iostream>
+#include <cstdint>
+union S
+{
+    std::int32_t n;     // chiếm 4 bytes
+    std::uint16_t s[2]; // chiếm 4 bytes
+    std::uint8_t c;     // chiếm 1 byte
+};                      // Cả union chiếm 4 bytes
+ 
+int main()
+{
+    S s = {0x12345678}; // khởi tạo thành viên đầu tiên, bây giờ s.n đang hoạt động
+    // tại đây, việc đọc từ s.s hoặc s.c là hành vị không được định nghĩa
+    std::cout << std::hex << "s.n = " << s.n << '\n';
+    s.s[0] = 0x0011; // s.s bây giờ là thành viên đang hoạt động
+    // tại đây, việc đọc từ n hoặc c là UB nhưng hầu hết trình biên dịch định nghĩa nó
+    std::cout << "s.c is now " << +s.c << '\n' // 11 hoặc 00, phụ thuộc vào nền tảng đang chạy
+              << "s.n is now " << s.n << '\n'; // 12340011 hoặc 00115678
+}
+</syntaxhighlight>Kết quả đầu ra có thể là<syntaxhighlight lang="cpp">
+s.n = 12345678
+s.c bây giờ là 0
+s.n bây giờ 115678
+</syntaxhighlight>Mõi thành viên được phân bổ khi như thể chúng là thành viên duy nhất của lớp.
+{| class="wikitable"
+|+
+|Nếu như các thành viên của một union là các lớp với kiểu hàm xây dưng và hàm hủy bỏ do người dùng tự định nghĩa thì muốn chuyển đổi sang thành viên hoạt động, cần phải có hàm hủy bỏ tường minh và vị trí mới tổng quan như sau:<syntaxhighlight lang="cpp">
+#include <iostream>
+#include <string>
+#include <vector>
+ 
+union S
+{
+    std::string str;
+    std::vector<int> vec;
+    ~S() {} // Cần phải biết thành viên nào đang hoạt động, chỉ có thể  trong union-like class
+};          // cả union sẽ chiếm max(sizeof(string), sizeof(vector<int>))
+ 
+int main()
+{
+    S s = {"Hello, world"};
+    // tại đây, việc đọc từ s.vec là hành vi không được định nghĩa
+    std::cout << "s.str = " << s.str << '\n';
+    s.str.~basic_string();
+    new (&s.vec) std::vector<int>;
+    // bây giờ, s.vec là thành viên đang hoạt động của union
+    s.vec.push_back(10);
+    std::cout << s.vec.size() << '\n';
+    s.vec.~vector();
+}
+</syntaxhighlight>Kết quả đầu ra:<syntaxhighlight lang="cpp">
+s.str = Hello, world
+1
+</syntaxhighlight>
+|
+|}
+Nếu hai union là kiểu [https://en.cppreference.com/w/cpp/named_req/StandardLayoutType standard-layout], nó được định nghĩa tốt để kiểm tra dãy con chung của chúng trên nhiều trình biên dịch.
+==Vòng đời của thành viên==
+[https://en.cppreference.com/w/cpp/language/lifetime Lifetime] của một thành viên thuộc ụnion tính từ lúc thành viên đó được chuyển sang trạng thái hoạt động. Nếu có một thành viên khác được kích hoạt trước đó thì thời gian sống của nó kết thúc.
+
+Khi một thành viên đang hoạt động của một union được chuyển đổi bởi phép gán dưới hình thức E1 = E2 sử dụng cả toán tử gán được xây dựng sẵn hoặc một toán tử gán bình thường, mọi thành viên X thuộc union xuất hiện trong quyền truy cập thành viên và mảng chỉ số phụ của E1 không phải là một lớp với hàm xây dựng bình thường hoặc xóa hàm xây dựng của nó, nếu sự sửa đổi của X có hành vi không được định nghĩa với nguyên tắc là kiểu của nó không biển đổi, một đối tượng có kiểu thuộc X được ngầm định tạo ra trong vùng lưu trữ đề xuất, không có quá trình khởi tạo nào được thực hiện và tại lúc bắt đầu của thời gian sống của nó được liên tục sau khi giá trị tính toán của toán tử bên trái và phải ,và trước phép gán.<syntaxhighlight lang="cpp">
+union A { int x; int y[4]; };
+struct B { A a; };
+union C { B b; int k; };
+int f() {
+  C c;               // không bắt đầu thời gian sống của bất kỳ thành viên nào htuoojc union
+  c.b.a.y[3] = 4;    // OK: "c.b.a.y[3]", đặt tên cho thành viên thuộc union là c.b và c.b.a.y;
+                     // Ở đây tạo đối tượng giữ các thành viên của union là c.b and c.b.a.y
+  return c.b.a.y[3]; // OK: c.b.a.y đề cập đến đối tượng vừa mới được tạo
+}
+ 
+struct X { const int a; int b; };
+union Y { X x; int k; };
+void g() {
+  Y y = { { 1, 2 } }; // OK, y.x là thành viên thuộc union đang hoạt động
+  int n = y.x.a;
+  y.k = 4;   // OK: kết thúc vòng đời của y.x, y.k là thành viên hoạt động của union
+  y.x.b = n; // hành vi không được định nghĩa: y.x.b sửa đổi thời gian sống của chúng bên ngoài
+             // "y.x.b" đặt tên y.x, nhưng hàm xây dựng mặc định của X đã bị xóa,
+             // do đó thời gian sống của thành viên thuộc union y.x's không được ngầm định bắt đầu
+}
+</syntaxhighlight>Trivial <code>move constructor, move assignment operator, (hỗ trợ từ C++11)</code>copy constructor và copy assignment operator of union types copy object representations. Nếu nguồn và đích không cùng chung một đối tượng thì những hàm thành viên đặc biệt bắt đầu vòng đời của mọi đối tượng (ngoại trừ những đối tượng mà nó không phải các đối tượng trích xuất của đích hoặc của [https://en.cppreference.com/w/cpp/language/lifetime#Implicit-lifetime_types implicit-lifetime type]) được lồng vào trong đích tương ứng với việc lồng chúng vào trong nguồn trước khi thực hiện quá trình sao chép. Nói cách khác, chúng không làm gì cả. Hai đối tượng union có cùng lượng thành viên hoạt động tương ứng sau quá trình xây dựng hoặc thực hiện phép gán thông qua các hàm đặc biệt không quan trọng.
+==Unions vô danh==
+Một union vô danh là union không được đặt tên nghĩa là việc đặt tên không thời thực hiện cùng với việc định nghĩa các biến (bao gồm kiểu đối tượng của union, tham chiếu hoặc con trỏ trỏ tới union).
+
+'''union''' '''{''' ''member-sepcification'' '''};'''
+
+Unions vô danh có một hạn chế hơn nữa: nó không thể có hàm thành viên, không thể có các thành viên tĩnh chứa dữ liệu và tát cả dữ liệu thành viên phải được công khai. Khai báo duy nhất được phép là dữ liệu thành viên không tĩnh <code>và [https://en.cppreference.com/w/cpp/language/static_assert static_assert] declarations (hỗ trợ từ C++11)</code>.
+Thành viên của một union vô danh được giữ trong một vùng đóng ( và không được xung đột với các tên khác được khai báo ở trong đó)<syntaxhighlight lang="cpp">
+int main()
+{
+    union
+    {
+        int a;
+        const char* p;
+    };
+    a = 1;
+    p = "Jennifer";
+}
+</syntaxhighlight>Namespace-scope unions vô danh phải được khai báo tĩnh nếu không chúng sẽ xuất hiện trong một namespace không được đặt tên.
+==Union giống như lớp==
+Một Union giống như lớp không chỉ là một union mà còn là một lớp. Nó có ít nhất một union vô danh là thành viên. Một union như vậy sẽ có tập hợp các thành viên khác nhau như sau:
+*Thành viên không tĩnh chứa dữ liệu trực thuộc unions vô danh
+*Thêm nữa, nếu nó là một union, thì các thành viên không tĩnh chứa dữ liệu của nó sẽ không phải là unions vô danh.
+Union giống như lớp dùng để tạo [[wikipedia:Tagged_union|tagged unions]].<syntaxhighlight lang="cpp">
+#include <iostream>
+ 
+// S có một thành viên không tĩnh chứa dữ liệu (tag), ba enumerator thành viên (CHAR, INT, DOUBLE), 
+// và ba thành viên khác nhau (c, i, d)
+struct S
+{
+    enum{CHAR, INT, DOUBLE} tag;
+    union
+    {
+        char c;
+        int i;
+        double d;
+    };
+};
+ 
+void print_s(const S& s)
+{
+    switch(s.tag)
+    {
+        case S::CHAR: std::cout << s.c << '\n'; break;
+        case S::INT: std::cout << s.i << '\n'; break;
+        case S::DOUBLE: std::cout << s.d << '\n'; break;
+    }
+}
+ 
+int main()
+{
+    S s = {S::CHAR, 'a'};
+    print_s(s);
+    s.tag = S::INT;
+    s.i = 123;
+    print_s(s);
+}
+</syntaxhighlight>Kết quả đầu ra:<syntaxhighlight lang="cpp">
+a
+123
+</syntaxhighlight>
+{| class="wikitable"
+|+
+|Thư viện chuẩn của C++ bao gồm std::variant có thể được dùng để thay thế cho việc sử dụng union và union giống như lớp.<syntaxhighlight lang="cpp">
+#include <variant>
+#include <iostream>
+ 
+int main()
+{
+    std::variant<char, int, double> s = 'a';
+    std::visit([](auto x){ std::cout << x << '\n';}, s);
+    s = 123;
+    std::visit([](auto x){ std::cout << x << '\n';}, s);
+}
+</syntaxhighlight>Kết quả đầu ra:<syntaxhighlight lang="cpp">
+a
+123
+</syntaxhighlight>
+|(hỗ trợ từ C++17)
+|}
+
+== Nhược điểm ==
+Các báo cáo lỗi thay đổi hành vi sau đây được áp dụng cho các bản C++ tiêu chuẩn đã được công bố trước đó
+{| class="wikitable"
+|+
+!DR
+!Áp dụng cho
+!Hành vi đã công bố
+!Sửa lại
+|-
+|[https://cplusplus.github.io/CWG/issues/1940.html CWG 1940]
+|C++11
+|Union vô danh chỉ được cho phép các thành viên không tĩnh chữa dữ liệu
+|static_assert cũng được cho phép 
+|}
+
+== Xem thêm ==
+{| class="wikitable"
+|+
+|'''[https://en.cppreference.com/w/cpp/utility/variant variant]''' <small>(trong C++17)</small>
+|Một kiểu khác an toàn hơn nhằm loại bỏ union
+<small>(khuôn mẫu lớp)</small>
+|-
+| colspan="2" |'''[https://en.cppreference.com/w/c/language/union C documentation]''' cho khai báo Union
+|}
