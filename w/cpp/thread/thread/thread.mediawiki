@@ -3,7 +3,7 @@ Thư viện hỗ trợ luồng
 <source>std::thread</source>
 
 Được xác định trong tiêu đề <code>[https://en.cppreference.com/w/cpp/header/thread <thread>]</code>
-<source lang>
+<source lang="cpp">
 class thread;
 </source>
 (từ C++11)
