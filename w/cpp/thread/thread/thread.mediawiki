@@ -1,13 +1,13 @@
 Thư viện hỗ trợ luồng
 
-'''<code>std::thread</code>'''
+<source>std::thread</source>
 
 Được xác định trong tiêu đề <code>[https://en.cppreference.com/w/cpp/header/thread <thread>]</code>
-{| class="wikitable"
-|-
-|class thread;
-|(từ C++11)
-|}
+<source lang>
+class thread;
+</source>
+(từ C++11)
+
 Lớp ''thread'' đại diện cho [[wikipedia:Thread_(computing)|một luồng thực hiện duy nhất]]. Luồng cho phép nhiều chức năng thực hiện đồng thời.
 
 Các luồng bắt đầu thực thi ngay lập tức khi xây dựng đối tượng luồng liên quan (trì hoãn dựa trên bất kỳ sự chậm trễ lập lịch của hệ điều hành), bắt đầu ở hàm bậc cao được cung cấp dưới dạng [https://en.cppreference.com/w/cpp/thread/thread/thread đối số của hàm xây dựng]. Giá trị trả về của hàm bậc cao bị bỏ qua, và nếu nó kết thúc bằng cách ném ra một ngoại lệ, [https://en.cppreference.com/w/cpp/error/terminate std::terminate] sẽ được gọi. Hàm bậc cao có thể truyền đạt giá trị trả về của nó hoặc một ngoại lệ thông qua [https://en.cppreference.com/w/cpp/thread/promise std::promise] hoặc thay đổi các biến được chia sẻ (có thể yêu cầu được đồng bộ hóa, xem [https://en.cppreference.com/w/cpp/thread/mutex std::mutex] và [https://en.cppreference.com/w/cpp/atomic/atomic std::atomic])
@@ -15,6 +15,7 @@ Các luồng bắt đầu thực thi ngay lập tức khi xây dựng đối tư
 Những đối tượng std::thread có lẽ sẽ ở trạng thái không đại diện cho bất kỳ luồng nào (sau khi gọi hàm xây dựng, dịch chuyển, [https://en.cppreference.com/w/cpp/thread/thread/detach tách], [https://en.cppreference.com/w/cpp/thread/thread/join tham gia]) và một luồng thực thi có thể không liên kết với bất kỳ đối tượng luồng nào (sau khi [https://en.cppreference.com/w/cpp/thread/thread/detach tách])
 
 Không thể có hai đối tượng std::thread nào có thể đại diện cho cùng một luồng thực thi; std::thread không phải là [https://en.cppreference.com/w/cpp/named_req/CopyConstructible CopyConstructible] hoặc [https://en.cppreference.com/w/cpp/named_req/CopyAssignable CopyAssignable], mặc dù nó là [https://en.cppreference.com/w/cpp/named_req/MoveConstructible MoveConstructible] and [https://en.cppreference.com/w/cpp/named_req/MoveAssignable MoveAssignable].
+
 ===Các loại thành viên ===
 {| class="wikitable"
 |Loại thành viên
@@ -23,12 +24,14 @@ Không thể có hai đối tượng std::thread nào có thể đại diện ch
 |<code>native_handle_type</code><small>(không phải lúc nào cũng hiện diện)</small>
 |Định nghĩa xử lý
 |}
+
 ===Các lớp thành viên===
 {| class="wikitable"
 |[https://en.cppreference.com/w/cpp/thread/thread/id id]
 |đại diện cho ''id'' của một chủ đề
 <small>(lớp thành viên công khai)</small>
 |}
+
 ===''Chức năng thành viên''===
 {| class="wikitable"
 |[https://en.cppreference.com/w/cpp/thread/thread/thread (constructor)]
@@ -43,6 +46,7 @@ Không thể có hai đối tượng std::thread nào có thể đại diện ch
 |Di chuyển đối tượng luồng
 <small>(hàm thành viên công khai)</small>
 |}
+
 ===== ''Quan sát''=====
 {| class="wikitable"
 | '''[https://en.cppreference.com/w/cpp/thread/thread/joinable joinable]'''
@@ -61,6 +65,7 @@ Không thể có hai đối tượng std::thread nào có thể đại diện ch
 |Trả về số lượng luồng đồng thời được hỗ trợ bởi quá trình triển khai
 <small>(hàm thành viên công khai)</small>
 |}
+
 =====''Hoạt động''=====
 {| class="wikitable"
 |'''[https://en.cppreference.com/w/cpp/thread/thread/join join]'''
@@ -75,12 +80,14 @@ Không thể có hai đối tượng std::thread nào có thể đại diện ch
 |Hoán đổi hai đối tượng luồng
 <small>(hàm thành viên công cộng)</small>
 |}
+
 ===Chức năng không phải thành viên===
 {| class="wikitable"
 |[https://en.cppreference.com/w/cpp/thread/thread/swap2 std::swap <small>(std::thread)</small>] <small>(C++11)</small>
 |Đặc biệt hóa thuật toán std::swap
 <small>(hàm)</small>
 |}
+
 ===Xem thêm===
 {| class="wikitable"
 |[https://en.cppreference.com/w/cpp/thread/jthread jthread]
