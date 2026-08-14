@@ -1,3 +1,5 @@
+# CLOSED in 2026 since LLMs can translate too fast, we no need manual translate anymore
+
 # Đóng góp
 ## Làm sao để đóng góp cho dự án với tư cách là thành viên
 
